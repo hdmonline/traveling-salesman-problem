@@ -8,7 +8,7 @@
 public class Main {
 
     private static String filename;
-    private static int algo;
+    private static String algo;
     private static int cutoffTime;
     private static int seed;
 
@@ -18,13 +18,13 @@ public class Main {
 
         // Entry point for different algorithms
         switch (algo) {
-            case 1:
+            case "BnB":
                 break;
-            case 2:
+            case "Approx":
                 break;
-            case 3:
+            case "LS1":
                 break;
-            case 4:
+            case "LS2":
                 break;
             default:
 
@@ -64,22 +64,10 @@ public class Main {
             // -algo
             if (arg.equals("-algo")) {
                 if (i < args.length) {
-                    String algoName = args[i++];
-                    switch (algoName) {
-                        case "BnB":
-                            algo = 1;
-                            break;
-                        case "Approx":
-                            algo = 2;
-                            break;
-                        case "LS1":
-                            algo = 3;
-                            break;
-                        case "LS2":
-                            algo = 4;
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Not a valid algorithm name: " + args[i-1]);
+                    algo = args[i++];
+                    if (!algo.equals("BnB") && !algo.equals("Approx") &&
+                            !algo.equals("LS1") && !algo.equals("LS2")) {
+                        throw new IllegalArgumentException("Not a valid algorithm name: " + args[i-1]);
                     }
                 } else {
                     System.err.println("-algo requires a algorithm name");
