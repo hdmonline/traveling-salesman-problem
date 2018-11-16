@@ -1,10 +1,13 @@
+import java.io.IOException;
+
 /**
  * Main.java
- * @author Chong Ye, Dongmin Han, Shan Xiong, Yuanlai Zhou
+ * @author Group 31: Chong Ye, Dongmin Han, Shan Xiong, Yuanlai Zhou
  * Georgia Institute of Technology, Fall 2018
  *
  * The main entry point for CSE6140 final project
  */
+
 public class Main {
 
     private static String filename;
@@ -15,6 +18,14 @@ public class Main {
     public static void main(String[] args) {
         // Parse arguments
         parseArguments(args);
+
+        // Handle input
+        try {
+            FileIo.readFile(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // Entry point for different algorithms
         switch (algo) {
