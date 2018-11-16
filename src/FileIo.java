@@ -14,9 +14,17 @@ import java.io.IOException;
 public class FileIo {
 
     private static final double R = 6378.388;
+    private static int numVertices;
     private static double[] xLatitude;
     private static double[]  yLongitude;
 
+    /**
+     * Read the dataset from input file.
+     *
+     * @param filepath The input file path.
+     * @return A graph object
+     * @throws IOException
+     */
     public static Graph readFile(String filepath) throws IOException {
         // Get instance name from the file name
         File file = new File(filepath);
@@ -96,8 +104,6 @@ public class FileIo {
                 // res[i][i] = Integer.MAX_VALUE;
             }
         }
-
-
         return res;
     }
 

@@ -5,6 +5,8 @@
  *
  * A Graph class with distance matrix
  */
+
+
 public class Graph {
     // Graph name
     private String name;

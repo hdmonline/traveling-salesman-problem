@@ -1,5 +1,3 @@
-import java.io.IOException;
-
 /**
  * Main.java
  * @author Group 31: Chong Ye, Dongmin Han, Shan Xiong, Yuanlai Zhou
@@ -7,6 +5,8 @@ import java.io.IOException;
  *
  * The main entry point for CSE6140 final project
  */
+
+import java.io.IOException;
 
 public class Main {
 
