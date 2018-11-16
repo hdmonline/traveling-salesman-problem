@@ -14,6 +14,8 @@ import java.io.IOException;
 public class FileIo {
 
     private static final double R = 6378.388;
+    private static double[] xLatitude;
+    private static double[]  yLongitude;
 
     public static Graph readFile(String filepath) throws IOException {
         // Get instance name from the file name
@@ -52,7 +54,8 @@ public class FileIo {
         }
 
         // Read x-y coordinates or latitude-longitude
-        double[] xLatitude = new double[numVertices], yLongitude = new double[numVertices];
+        xLatitude = new double[numVertices];
+        yLongitude = new double[numVertices];
         for (int i = 0; i < numVertices; i++) {
             currLine = br.readLine();
             xLatitude[i] = Double.parseDouble(currLine.split(" ")[1]);
@@ -78,7 +81,7 @@ public class FileIo {
     private static int[][] getDistMat(String type, double[] xLatitude, double[] yLongitude, int numVertices) {
         int[][] res = new int[numVertices][numVertices];
 
-        if (type.equals("EUR_2D")) {
+        if (type.equals("EUC_2D")) {
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j <= i; j++) {
                     res[i][j] = res[j][i] = calcEucDist(xLatitude[i], xLatitude[j], yLongitude[i], yLongitude[j]);
