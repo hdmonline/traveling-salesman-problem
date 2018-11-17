@@ -13,10 +13,9 @@ import java.io.IOException;
 
 public class FileIo {
 
-    private static final double R = 6378.388;
+
     private static int numVertices;
-    private static double[] xLatitude;
-    private static double[]  yLongitude;
+    private static Point[] points;
 
     /**
      * Read the dataset from input file.
@@ -25,7 +24,7 @@ public class FileIo {
      * @return A graph object
      * @throws IOException
      */
-    public static Graph readFile(String filepath) throws IOException {
+    public static Bnb readFile(String filepath) throws IOException {
         // Get instance name from the file name
         File file = new File(filepath);
         String filename = file.getName();
@@ -62,74 +61,48 @@ public class FileIo {
         }
 
         // Read x-y coordinates or latitude-longitude
-        xLatitude = new double[numVertices];
-        yLongitude = new double[numVertices];
+        points = new Point[numVertices];
         for (int i = 0; i < numVertices; i++) {
             currLine = br.readLine();
-            xLatitude[i] = Double.parseDouble(currLine.split(" ")[1]);
-            yLongitude[i] = Double.parseDouble(currLine.split(" ")[2]);
+            points[i] = new Point(
+                    Integer.parseInt(currLine.split(" ")[0]),
+                    Double.parseDouble(currLine.split(" ")[1]),
+                    Double.parseDouble(currLine.split(" ")[2]) );
         }
 
         // Calculate distance matrix
-        int[][] distMat = getDistMat(type, xLatitude, yLongitude, numVertices);
+        int[][] distMat = getDistMat(type, points, numVertices);
 
         // Return the graph
-        return new Graph(instName, numVertices, distMat);
+        return new Bnb(instName, numVertices, distMat);
     }
 
     /**
      * Initialize the distance matrix depending on the edge weight type
      * 
      * @param type Edge weight type
-     * @param xLatitude x coordinates or latitudes
-     * @param yLongitude y cocrdinates or longitudes
+     * @param points Array of points
      * @param numVertices Number of vertices
      * @return The disctance matrix
      */
-    private static int[][] getDistMat(String type, double[] xLatitude, double[] yLongitude, int numVertices) {
+    private static int[][] getDistMat(String type, Point[] points, int numVertices) {
         int[][] res = new int[numVertices][numVertices];
 
         if (type.equals("EUC_2D")) {
             for (int i = 0; i < numVertices; i++) {
-                for (int j = 0; j <= i; j++) {
-                    res[i][j] = res[j][i] = calcEucDist(xLatitude[i], xLatitude[j], yLongitude[i], yLongitude[j]);
+                for (int j = 0; j < i; j++) {
+                    res[i][j] = res[j][i] = Point.calcEucDist(points[i], points[j]);
                 }
-                // res[i][i] = Integer.MAX_VALUE;
+                res[i][i] = -1;
             }
         } else if (type.equals("GEO")) {
             for (int i = 0; i < numVertices; i++) {
-                for (int j = 0; j <= i; j++) {
-                    res[i][j] = res[j][i] = calcGeoDist(xLatitude[i], xLatitude[j], yLongitude[i], yLongitude[j]);
+                for (int j = 0; j < i; j++) {
+                    res[i][j] = res[j][i] = Point.calcGeoDist(points[i], points[j]);
                 }
-                // res[i][i] = Integer.MAX_VALUE;
+                res[i][i] = -1;
             }
         }
         return res;
-    }
-
-    /**
-     * Calculate the Euclidean distance between 2 nodes
-     *
-     * @param x1 x coordinate of node 1
-     * @param x2 x coordinate of node 2
-     * @param y1 y coordinate of node 1
-     * @param y2 y coordinate of node 2
-     * @return Distance between 2 nodes
-     */
-    private static int calcEucDist(double x1, double x2, double y1, double y2) {
-        return (int) Math.round(Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)));
-    }
-
-    /**
-     * Calculate the geo distance between 2 nodes
-     *
-     * @param lat1 latitude of node 1
-     * @param lat2 latitude of node 2
-     * @param long1 longitude of node 1
-     * @param long2 longitude of node 2
-     * @return Distance between 2 nodes
-     */
-    private static int calcGeoDist(double lat1, double lat2, double long1, double long2) {
-        return (int) Math.round(R * Math.acos( Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(Math.abs(long1 - long2))));
     }
 }
