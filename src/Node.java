@@ -188,84 +188,70 @@ public class Node {
     }
 
     /**
-     * Calculate the penalty of certain column. The column index is based on {@link #matrix} of current object.
-     * Update the penalty in the {@link #colPenalty}
-     *
-     * @param col   The column index (based on {@link #matrix})
-     * @return      The penalty of given column
+     * Calculate the penalty of each column.
      */
-    private int calColPenalty(int col) {
-        // If the column has been calculated, return the result.
-        if (colPenalty[col] >= 0) {
-            return colPenalty[col];
-        }
-
-        int numZero = 0;
-        int minPenalty = Integer.MAX_VALUE;
-
+    private void calColPenalty() {
+        // Column
         for (int i = 0; i < size; i++) {
-            if (matrix[i][col] == 0) {
-                numZero++;
-                if (numZero > 1) {
-                    minPenalty = 0;
-                    break;
+            int numZero = 0;
+            int minPenalty = Integer.MAX_VALUE;
+            // Row
+            for (int j = 0; j < size; j++) {
+                if (matrix[j][i] == 0) {
+                    numZero++;
+                    if (numZero > 1) {
+                        minPenalty = 0;
+                        break;
+                    }
+                } else if (matrix[j][i] > 0 && matrix[j][i] < minPenalty) {
+                    minPenalty = matrix[j][i];
                 }
-            } else if (matrix[i][col] > 0 && matrix[i][col] < minPenalty) {
-                minPenalty = matrix[i][col];
             }
+            colPenalty[i] = minPenalty;
         }
-
-        colPenalty[col] = minPenalty;
-        return minPenalty;
     }
 
     /**
-     * Calculate the penalty of certain row. The row index is based on {@link #matrix} of current object.
-     * Update the penalty in the {@link #rowPenalty}
-     *
-     * @param row   The row index (based on {@link #matrix})
-     * @return      The penalty of given row
+     * Calculate the penalty of each row.
      */
-    private int calRowPenalty(int row) {
-        // If the row has been calculated, return the result.
-        if (rowPenalty[row] >= 0) {
-            return rowPenalty[row];
-        }
-
-        int numZero = 0;
-        int minPenalty = Integer.MAX_VALUE;
-
+    private void calRowPenalty() {
+        // Row
         for (int i = 0; i < size; i++) {
-            if (matrix[row][i] == 0) {
-                numZero++;
-                if (numZero > 1) {
-                    minPenalty = 0;
-                    break;
+            int numZero = 0;
+            int minPenalty = Integer.MAX_VALUE;
+            // Column
+            for (int j = 0; j < size; j++) {
+                if (matrix[i][j] == 0) {
+                    numZero++;
+                    if (numZero > 1) {
+                        minPenalty = 0;
+                        break;
+                    }
+                } else if (matrix[i][j] > 0 && matrix[i][j] < minPenalty) {
+                    minPenalty = matrix[i][j];
                 }
-            } else if (matrix[row][i] > 0 && matrix[row][i] < minPenalty) {
-                minPenalty = matrix[row][i];
             }
+            rowPenalty[i] = minPenalty;
         }
-
-        rowPenalty[row] = minPenalty;
-        return minPenalty;
     }
 
     /**
      * Select a path to be branched at based on row and col penalties.
      */
     public void selectBranchPath() {
-        maxPenalty = -1;
+        calRowPenalty();
+        calColPenalty();
 
+        maxPenalty = -1;
         // Calculate total penalty for each zero path and
         // keep track of the index of the path with highest panalty.
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (matrix[i][j] == 0) {
                     // Check total penalty
-                    if (calRowPenalty(i) + calColPenalty(j) > maxPenalty) {
+                    if (rowPenalty[i] + colPenalty[j] > maxPenalty) {
                         // Update
-                        maxPenalty = calRowPenalty(i) + calColPenalty(j);
+                        maxPenalty = rowPenalty[i] + colPenalty[j];
                         highestPenaltyRow = i;
                         highestPenaltyCol = j;
                     }
@@ -419,8 +405,8 @@ public class Node {
 
         // Reduce matrix by only unpdating elements on highest penalty row and column
         for (int i = 0; i < size; i++) {
-            matrix[highestPenaltyRow][i] -= calRowPenalty(highestPenaltyRow);
-            matrix[i][highestPenaltyCol] -= calColPenalty(highestPenaltyCol);
+            matrix[highestPenaltyRow][i] -= rowPenalty[highestPenaltyRow];
+            matrix[i][highestPenaltyCol] -= colPenalty[highestPenaltyCol];
         }
 
         return true;
