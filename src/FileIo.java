@@ -16,6 +16,9 @@ public class FileIo {
 
     private static int numVertices;
     private static Point[] points;
+    private static String solutionFile;
+    private static String traceFile;
+
 
     /**
      * Read the dataset from input file.
@@ -25,11 +28,6 @@ public class FileIo {
      * @throws IOException
      */
     public static Bnb readFile(String filepath) throws IOException {
-        // Get instance name from the file name
-        File file = new File(filepath);
-        String filename = file.getName();
-        String instName = filename.split("\\.")[0];
-
         // Open the file and read information about the dataset
         BufferedReader br = new BufferedReader(new FileReader(filepath));
         String currLine = "";
@@ -70,11 +68,14 @@ public class FileIo {
                     Double.parseDouble(currLine.split(" ")[2]) );
         }
 
+        // Construct output file names
+        constructOutputFiles();
+
         // Calculate distance matrix
         int[][] distMat = getDistMat(type, points, numVertices);
 
         // Return the graph
-        return new Bnb(instName, numVertices, distMat);
+        return new Bnb(numVertices, distMat);
     }
 
     /**
@@ -104,5 +105,21 @@ public class FileIo {
             }
         }
         return res;
+    }
+
+    /**
+     * Construct output files based on arguments.
+     */
+    private static void constructOutputFiles() {
+        String output = Main.getInstName() + "_" + Main.getAlgo() + "_" + Main.getCutoffTime();
+        if (Main.isHasSeed()) {
+            output += "_" + Main.getSeed();
+        }
+
+        // Solution file
+        solutionFile = output + ".sol";
+
+        // Construct trace file name
+        traceFile = output + ".trace";
     }
 }

@@ -6,13 +6,16 @@
  * The main entry point for CSE6140 final project
  */
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
-    private static String filename;
+    private static String filePath;
+    private static String instName;
     private static String algo;
     private static int cutoffTime;
+    private static boolean hasSeed;
     private static int seed;
 
     public static void main(String[] args) {
@@ -21,7 +24,7 @@ public class Main {
 
         // Handle input
         try {
-            FileIo.readFile(filename);
+            FileIo.readFile(filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +56,7 @@ public class Main {
 
         // The number of input arguments can only be 6 or 8
         if (args.length != 6 && args.length != 8) {
-            System.err.println("Usage: -inst <filename> -algo [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]");
+            System.err.println("Usage: -inst <filePath> -algo [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]");
             System.exit(1);
         }
 
@@ -65,9 +68,12 @@ public class Main {
             // -inst
             if (arg.equals("-inst")) {
                 if (i < args.length) {
-                    filename = args[i++];
+                    filePath = args[i++];
+                    // Get instance name from the file name
+                    File file = new File(filePath);
+                    instName = file.getName().split("\\.")[0];
                 } else {
-                    System.err.println("-inst requires a filename");
+                    System.err.println("-inst requires a filePath");
                     System.exit(1);
                 }
             }
@@ -99,6 +105,7 @@ public class Main {
             // -seed
             if (arg.equals("-seed")) {
                 if (i < args.length) {
+                    hasSeed = true;
                     seed = Integer.parseInt(args[i++]);
                 } else {
                     System.err.println("-time requires a integer");
@@ -106,5 +113,25 @@ public class Main {
                 }
             }
         }
+    }
+
+    public static String getInstName() {
+        return instName;
+    }
+
+    public static String getAlgo() {
+        return algo;
+    }
+
+    public static int getCutoffTime() {
+        return cutoffTime;
+    }
+
+    public static boolean isHasSeed() {
+        return hasSeed;
+    }
+
+    public static int getSeed() {
+        return seed;
     }
 }

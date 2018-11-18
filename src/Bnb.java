@@ -14,14 +14,17 @@ public class Bnb {
     private int[][] distMat; // Distance matrix
     public static int[][] reducedMat;
 
-//    private PriorityQueue<IntegerPair> pq = new PriorityQueue<IntegerPair>();
     private Stack<Node> stackBnb = new Stack<>();
     private int size;
 
     // Constructor
-    public Bnb(String name, int numVertices, int[][] distMat) {
+    public Bnb(int numVertices, int[][] distMat) {
         this.numVertices = numVertices;
         this.distMat = distMat;
     }
 
+    public static void run() {
+        
+
+    }
 }
