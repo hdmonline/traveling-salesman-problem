@@ -28,7 +28,7 @@ public class Node {
     private ArrayList<int[]> pathHistory = new ArrayList<>();
 
     // Final path.
-    private ArrayList<Integer> finalPath;
+    private ArrayList<Integer> finalPath = new ArrayList<>();
 
     /**
      * Constructor
@@ -49,6 +49,12 @@ public class Node {
 
         rowIdx = new int[size];
         colIdx = new int[size];
+
+        // Assign row and column indices
+        for (int i = 0; i < size; i++) {
+            rowIdx[i] = i;
+            colIdx[i] = i;
+        }
 
         rowPenalty = new int[size];
         colPenalty = new int[size];
@@ -100,8 +106,8 @@ public class Node {
                         col++;
                     }
                 }
+                row++;
             }
-            row++;
         }
 
         // Assign column indices
@@ -165,8 +171,8 @@ public class Node {
             for (int i = 0; i < shortcutHistory.size(); i++) {
                 // Make a short cut if the previous path is connected to the selected path
                 int[] temp = shortcutHistory.get(i);
-                if (temp[i] == row) {
-                    temp[i] = col;
+                if (temp[1] == row) {
+                    temp[1] = col;
                     shortcutHistory.remove(i);
                     this.removeCycle(temp[0], temp[1]);
                     break;
@@ -377,7 +383,7 @@ public class Node {
      */
     private void calFinalPath() {
         // Debug: check if the pathHistroy.size() == size;
-        if (pathHistory.size() != Bnb.getNumVertices()) {
+        if (pathHistory.size() != Bnb.getSize()) {
             System.err.println("Path history has wrong size!");
             System.exit(2);
         }

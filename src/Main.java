@@ -17,8 +17,10 @@ public class Main {
     private static int cutoffTime;
     private static boolean hasSeed;
     private static int seed;
+    public static long startTime;
+    private static long currTime;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Parse arguments
         parseArguments(args);
 
@@ -33,6 +35,10 @@ public class Main {
         // Entry point for different algorithms
         switch (algo) {
             case "BnB":
+                Bnb bnb = new Bnb(FileIo.getNumVertices(), FileIo.getDistMat());
+                startTime = System.currentTimeMillis();
+                Bnb.run();
+                FileIo.closeWriter();
                 break;
             case "Approx":
                 break;

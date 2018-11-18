@@ -6,26 +6,25 @@
  * A Bnb class with distance matrix
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
 public class Bnb {
-    private static int numVertices; // Number of vertices
+    private static int size; // Number of vertices
     private static int[][] distMat; // Distance matrix
-    public static int[][] reducedMat;
 
     private static Stack<Node> stackBnb = new Stack<>();
-    private static int size;
     private static int bestDist;
     private static ArrayList<Integer> bestTour;
 
     // Constructor
     public Bnb(int numV, int[][] distMat) {
-        numVertices = numV;
+        size = numV;
         this.distMat = distMat;
     }
 
-    public static void run() {
+    public static void run() throws IOException {
         bestDist = Integer.MAX_VALUE;
 
         // Initial the root node
@@ -42,7 +41,9 @@ public class Bnb {
                 if (processedNode.getLowerBound() < bestDist) {
                     bestDist = processedNode.getLowerBound();
                     bestTour = processedNode.getFinalPath();
-
+                    double consumedTime = (System.currentTimeMillis() - Main.startTime) / 1000.0;
+                    FileIo.updateTraceFile(consumedTime, bestDist);
+                    System.out.println("Best so far: " + bestDist);
                 }
             } else if (processedNode.getLowerBound() < bestDist) {
                 processedNode.selectBranchPath();
@@ -70,7 +71,7 @@ public class Bnb {
         }
     }
 
-    public static int getNumVertices() {
-        return numVertices;
+    public static int getSize() {
+        return size;
     }
 }

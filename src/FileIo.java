@@ -9,6 +9,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class FileIo {
 
@@ -17,7 +18,9 @@ public class FileIo {
     private static Point[] points;
     private static String solutionFile;
     private static String traceFile;
+    private static int[][] distMat;
 
+    private static PrintWriter traceWriter;
 
     /**
      * Read the dataset from input file.
@@ -26,7 +29,7 @@ public class FileIo {
      * @return          A graph object
      * @throws IOException
      */
-    public static Bnb readFile(String filepath) throws IOException {
+    public static void readFile(String filepath) throws IOException {
         // Open the file and read information about the dataset
         BufferedReader br = new BufferedReader(new FileReader(filepath));
         String currLine = "";
@@ -34,7 +37,7 @@ public class FileIo {
         // Get type and number of vertices from the header
         int numInfo = 0;
         String type = "EUR_2D";
-        int numVertices = 0;
+        // numVertices = 0;
         while (!currLine.equals("NODE_COORD_SECTION")) {
             currLine = br.readLine();
             String[] tokens = currLine.split(" ");
@@ -71,10 +74,24 @@ public class FileIo {
         composeOutputFileNames();
 
         // Calculate distance matrix
-        int[][] distMat = getDistMat(type, points, numVertices);
+        calDistMat(type, points, numVertices);
+    }
 
-        // Return the graph
-        return new Bnb(numVertices, distMat);
+    /**
+     * Update the trace result file when having a better result.
+     * TODO: Try BufferWriter to make it more efficient
+     *
+     * @param consumedTime  Current time since starting
+     * @param bestDist      Best result so far
+     */
+    public static void updateTraceFile(double consumedTime, int bestDist) throws IOException {
+        traceWriter = new PrintWriter(traceFile, "UTF-8");
+        String outputLine = String.format("%.2f", consumedTime) + ", " + bestDist;
+        traceWriter.println(outputLine);
+    }
+
+    public static void closeWriter() {
+        traceWriter.close();
     }
 
     /**
@@ -85,25 +102,24 @@ public class FileIo {
      * @param numVertices   Number of vertices
      * @return              The disctance matrix
      */
-    private static int[][] getDistMat(String type, Point[] points, int numVertices) {
-        int[][] res = new int[numVertices][numVertices];
+    public static void calDistMat(String type, Point[] points, int numVertices) {
+        distMat = new int[numVertices][numVertices];
 
         if (type.equals("EUC_2D")) {
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < i; j++) {
-                    res[i][j] = res[j][i] = Point.calEucDist(points[i], points[j]);
+                    distMat[i][j] = distMat[j][i] = Point.calEucDist(points[i], points[j]);
                 }
-                res[i][i] = -1;
+                distMat[i][i] = -1;
             }
         } else if (type.equals("GEO")) {
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < i; j++) {
-                    res[i][j] = res[j][i] = Point.calGeoDist(points[i], points[j]);
+                    distMat[i][j] = distMat[j][i] = Point.calGeoDist(points[i], points[j]);
                 }
-                res[i][i] = -1;
+                distMat[i][i] = -1;
             }
         }
-        return res;
     }
 
     /**
@@ -120,5 +136,13 @@ public class FileIo {
 
         // Trace file
         traceFile = output + ".trace";
+    }
+
+    public static int getNumVertices() {
+        return numVertices;
+    }
+
+    public static int[][] getDistMat() {
+        return distMat;
     }
 }
