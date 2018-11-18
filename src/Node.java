@@ -375,9 +375,10 @@ public class Node {
             System.exit(2);
         }
 
+        // The point id starts from 1 so we need to add 1 to the index.
         int[] first = pathHistory.get(0);
-        finalPath.add(first[0]);
-        finalPath.add(first[1]);
+        finalPath.add(first[0] + 1);
+        finalPath.add(first[1] + 1);
         pathHistory.remove(0);
         int tail = first[1];
         while (pathHistory.size() > 1) {
@@ -385,7 +386,7 @@ public class Node {
                 int[] temp = pathHistory.get(i);
                 if (temp[0] == tail) {
                     tail = temp[1];
-                    finalPath.add(tail);
+                    finalPath.add(tail + 1);
                     pathHistory.remove(i);
                     break;
                 }
