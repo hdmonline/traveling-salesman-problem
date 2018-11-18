@@ -128,6 +128,8 @@ public class Node {
         }
 
         // Remove the path by checking possible cycles
+        int[] newPath = {parent.getRowIdx(rmRowIdx), parent.getColIdx(rmColIdx)};
+        pathHistory.add(newPath);
         removeCycle(parent.getRowIdx(rmRowIdx), parent.getColIdx(rmColIdx));
 
         // Reduce the matrix
@@ -164,7 +166,6 @@ public class Node {
         if (isIsolated) {
             int[] newPath = {row, col};
             shortcutHistory.add(newPath);
-            pathHistory.add(newPath.clone());
             return;
         } else {
             // The selected path is connected. Find the potential path by using shortcutHistory
@@ -391,6 +392,7 @@ public class Node {
         int[] first = pathHistory.get(0);
         finalPath.add(first[0]);
         finalPath.add(first[1]);
+        pathHistory.remove(0);
         int tail = first[1];
         while (pathHistory.size() > 1) {
             for (int i = 0; i < pathHistory.size(); i++) {

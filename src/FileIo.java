@@ -64,6 +64,7 @@ public class FileIo {
         points = new Point[numVertices];
         for (int i = 0; i < numVertices; i++) {
             currLine = br.readLine();
+            currLine = currLine.trim();
             points[i] = new Point(
                     Integer.parseInt(currLine.split(" ")[0]),
                     Double.parseDouble(currLine.split(" ")[1]),
@@ -75,6 +76,14 @@ public class FileIo {
 
         // Calculate distance matrix
         calDistMat(type, points, numVertices);
+//        numVertices = 5;
+//        distMat = new int[][] {
+//                {-1, 10, 8, 9, 7},
+//                {10, -1, 10, 5, 6},
+//                {8, 10, -1, 8, 9},
+//                {9, 5, 8, -1, 6},
+//                {7, 6, 9, 6, -1}
+//        };
     }
 
     /**
@@ -88,6 +97,7 @@ public class FileIo {
         traceWriter = new PrintWriter(traceFile, "UTF-8");
         String outputLine = String.format("%.2f", consumedTime) + ", " + bestDist;
         traceWriter.println(outputLine);
+        traceWriter.close();
     }
 
     public static void closeWriter() {

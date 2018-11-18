@@ -63,13 +63,18 @@ public class Point {
 
     /**
      * Calculate the geo distance between 2 points
+     * TODO: This is not correct for some reason
      *
      * @param p1 Point 1
      * @param p2 Point 2
      * @return Distance between 2 points
      */
     public static int calGeoDist(Point p1, Point p2) {
-        return (int) Math.round(R * Math.acos( Math.sin(p1.getxLatitude()) * Math.sin(p2.getxLatitude()) +
-                Math.cos(p1.getxLatitude()) * Math.cos(p2.getxLatitude()) * Math.cos(Math.abs(p1.getyLongitude() - p2.getyLongitude()))));
+//        return (int) Math.floor(R * Math.acos( Math.sin(p1.getxLatitude()) * Math.sin(p2.getxLatitude()) +
+//                Math.cos(p1.getxLatitude()) * Math.cos(p2.getxLatitude()) * Math.cos(Math.abs(p1.getyLongitude() - p2.getyLongitude()))));
+        double q1 = Math.cos(p1.getyLongitude() - p2.getyLongitude());
+        double q2 = Math.cos(p1.getxLatitude() + p2.getxLatitude());
+        double q3 = Math.cos(p1.getxLatitude() + p2.getxLatitude());
+        return (int) Math.floor(R * Math.acos( 0.5 * ( (1.0 + q1)*q2 - (1.0-q1)*q3 ) ) + 1.0 );
     }
 }

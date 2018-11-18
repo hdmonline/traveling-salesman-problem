@@ -22,10 +22,11 @@ public class Bnb {
     public Bnb(int numV, int[][] distMat) {
         size = numV;
         this.distMat = distMat;
+        bestDist = Integer.MAX_VALUE;
     }
 
     public static void run() throws IOException {
-        bestDist = Integer.MAX_VALUE;
+
 
         // Initial the root node
         Node root = new Node(size, distMat);
@@ -44,6 +45,7 @@ public class Bnb {
                     double consumedTime = (System.currentTimeMillis() - Main.startTime) / 1000.0;
                     FileIo.updateTraceFile(consumedTime, bestDist);
                     System.out.println("Best so far: " + bestDist);
+                    System.out.println("Best tour so far: " + bestTour);
                 }
             } else if (processedNode.getLowerBound() < bestDist) {
                 processedNode.selectBranchPath();
