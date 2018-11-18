@@ -7,7 +7,6 @@
  */
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -69,7 +68,7 @@ public class FileIo {
         }
 
         // Construct output file names
-        constructOutputFiles();
+        composeOutputFileNames();
 
         // Calculate distance matrix
         int[][] distMat = getDistMat(type, points, numVertices);
@@ -110,7 +109,7 @@ public class FileIo {
     /**
      * Construct output files based on arguments.
      */
-    private static void constructOutputFiles() {
+    private static void composeOutputFileNames() {
         String output = Main.getInstName() + "_" + Main.getAlgo() + "_" + Main.getCutoffTime();
         if (Main.isHasSeed()) {
             output += "_" + Main.getSeed();
@@ -119,7 +118,7 @@ public class FileIo {
         // Solution file
         solutionFile = output + ".sol";
 
-        // Construct trace file name
+        // Trace file
         traceFile = output + ".trace";
     }
 }
