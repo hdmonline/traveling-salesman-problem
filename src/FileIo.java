@@ -20,15 +20,15 @@ public class FileIo {
     /**
      * Read the dataset from input file.
      *
-     * @param filepath The input file path.
-     * @return A graph object
+     * @param filepath  The input file path.
+     * @return          A graph object
      * @throws IOException
      */
     public static Bnb readFile(String filepath) throws IOException {
         // Get instance name from the file name
         File file = new File(filepath);
         String filename = file.getName();
-        String instName = filepath.split("\\.")[0];
+        String instName = filename.split("\\.")[0];
 
         // Open the file and read information about the dataset
         BufferedReader br = new BufferedReader(new FileReader(filepath));
@@ -80,10 +80,10 @@ public class FileIo {
     /**
      * Initialize the distance matrix depending on the edge weight type
      * 
-     * @param type Edge weight type
-     * @param points Array of points
-     * @param numVertices Number of vertices
-     * @return The disctance matrix
+     * @param type          Edge weight type
+     * @param points        Array of points
+     * @param numVertices   Number of vertices
+     * @return              The disctance matrix
      */
     private static int[][] getDistMat(String type, Point[] points, int numVertices) {
         int[][] res = new int[numVertices][numVertices];
@@ -91,14 +91,14 @@ public class FileIo {
         if (type.equals("EUC_2D")) {
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < i; j++) {
-                    res[i][j] = res[j][i] = Point.calcEucDist(points[i], points[j]);
+                    res[i][j] = res[j][i] = Point.calEucDist(points[i], points[j]);
                 }
                 res[i][i] = -1;
             }
         } else if (type.equals("GEO")) {
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < i; j++) {
-                    res[i][j] = res[j][i] = Point.calcGeoDist(points[i], points[j]);
+                    res[i][j] = res[j][i] = Point.calGeoDist(points[i], points[j]);
                 }
                 res[i][i] = -1;
             }

@@ -57,7 +57,7 @@ public class Point {
      * @param p2 Point 2
      * @return Distance between 2 points
      */
-    public static int calcEucDist(Point p1, Point p2) {
+    public static int calEucDist(Point p1, Point p2) {
         return (int) Math.round(Math.sqrt(Math.pow(p1.getxLatitude()-p2.getxLatitude(), 2) + Math.pow(p1.getyLongitude()-p2.getyLongitude(), 2)));
     }
 
@@ -68,7 +68,7 @@ public class Point {
      * @param p2 Point 2
      * @return Distance between 2 points
      */
-    public static int calcGeoDist(Point p1, Point p2) {
+    public static int calGeoDist(Point p1, Point p2) {
         return (int) Math.round(R * Math.acos( Math.sin(p1.getxLatitude()) * Math.sin(p2.getxLatitude()) +
                 Math.cos(p1.getxLatitude()) * Math.cos(p2.getxLatitude()) * Math.cos(Math.abs(p1.getyLongitude() - p2.getyLongitude()))));
     }
