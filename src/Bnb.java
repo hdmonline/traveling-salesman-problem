@@ -3,7 +3,7 @@
  * @author Group 31: Chong Ye, Dongmin Han, Shan Xiong, Yuanlai Zhou
  * Georgia Institute of Technology, Fall 2018
  *
- * A Bnb class with distance matrix
+ * Solving TSP problem using Branch and Bound algorithm
  */
 
 import java.io.IOException;
@@ -23,12 +23,13 @@ public class Bnb {
      * Constructor. Pass in the matrix and the size of the matrix.
      *
      * @param numV
-     * @param distMat
      */
-    public Bnb(int numV, int[][] distMat) {
+    public Bnb(int numV) {
         size = numV;
-        matrix = distMat;
         bestDist = Integer.MAX_VALUE;
+
+        // Calculate distance matrix
+        matrix = FileIo.calDistMat(FileIo.getType(), FileIo.getPoints(), size, "BnB");
     }
 
     /**
