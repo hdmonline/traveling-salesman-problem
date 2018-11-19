@@ -3,7 +3,7 @@
  * @author Group 31: Chong Ye, Dongmin Han, Shan Xiong, Yuanlai Zhou
  * Georgia Institute of Technology, Fall 2018
  *
- * A Bnb class with distance matrix
+ * Solving TSP problem using Branch and Bound algorithm
  */
 
 import java.io.IOException;
