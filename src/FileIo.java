@@ -6,31 +6,29 @@
  * Helper function for reading dataset and writing results
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 
 public class FileIo {
 
-    private static final double R = 6378.388;
+
     private static int numVertices;
-    private static double[] xLatitude;
-    private static double[]  yLongitude;
+    private static Point[] points;
+    private static String solutionFile;
+    private static String traceFile;
+    private static int[][] distMat;
+
+    private static PrintWriter traceWriter;
+    private static PrintWriter solutionWriter;
 
     /**
      * Read the dataset from input file.
      *
-     * @param filepath The input file path.
-     * @return A graph object
+     * @param filepath  The input file path.
+     * @return          A graph object
      * @throws IOException
      */
-    public static Graph readFile(String filepath) throws IOException {
-        // Get instance name from the file name
-        File file = new File(filepath);
-        String filename = file.getName();
-        String instName = filepath.split("\\.")[0];
-
+    public static void readFile(String filepath) throws IOException {
         // Open the file and read information about the dataset
         BufferedReader br = new BufferedReader(new FileReader(filepath));
         String currLine = "";
@@ -38,7 +36,7 @@ public class FileIo {
         // Get type and number of vertices from the header
         int numInfo = 0;
         String type = "EUR_2D";
-        int numVertices = 0;
+        // numVertices = 0;
         while (!currLine.equals("NODE_COORD_SECTION")) {
             currLine = br.readLine();
             String[] tokens = currLine.split(" ");
@@ -62,74 +60,119 @@ public class FileIo {
         }
 
         // Read x-y coordinates or latitude-longitude
-        xLatitude = new double[numVertices];
-        yLongitude = new double[numVertices];
+        points = new Point[numVertices];
         for (int i = 0; i < numVertices; i++) {
             currLine = br.readLine();
-            xLatitude[i] = Double.parseDouble(currLine.split(" ")[1]);
-            yLongitude[i] = Double.parseDouble(currLine.split(" ")[2]);
+            currLine = currLine.trim();
+            points[i] = new Point(
+                    Integer.parseInt(currLine.split(" ")[0]),
+                    Double.parseDouble(currLine.split(" ")[1]),
+                    Double.parseDouble(currLine.split(" ")[2]) );
         }
 
-        // Calculate distance matrix
-        int[][] distMat = getDistMat(type, xLatitude, yLongitude, numVertices);
+        // Construct output file names
+        composeOutputFileNames();
 
-        // Return the graph
-        return new Graph(instName, numVertices, distMat);
+        // Calculate distance matrix
+        calDistMat(type, points, numVertices);
+//        numVertices = 5;
+//        distMat = new int[][] {
+//                {-1, 10, 8, 9, 7},
+//                {10, -1, 10, 5, 6},
+//                {8, 10, -1, 8, 9},
+//                {9, 5, 8, -1, 6},
+//                {7, 6, 9, 6, -1}
+//        };
+    }
+
+    /**
+     * Update the trace result file when having a better result.
+     *
+     * @param consumedTime  Current time since starting
+     * @param bestDist      Best result so far
+     */
+    public static void updateTraceFile(double consumedTime, int bestDist) throws IOException {
+        BufferedWriter br = new BufferedWriter(new FileWriter(traceFile, true));
+        String outputLine = String.format("%.2f", consumedTime) + ", " + bestDist;
+        br.write(outputLine);
+        br.newLine();
+        br.close();
+    }
+
+    /**
+     * Write the solution to the solution file.
+     * If the time is up for running the program, the best solution will be written.
+     *
+     * @param bestDist  The shortest distance so far.
+     * @param bestTour  The tour corresponding to the shortest distance.
+     */
+    public static void writeSolution(int bestDist, ArrayList<Integer> bestTour) {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(solutionFile, "UTF-8");
+            pw.println(bestDist);
+            for (int i = 0; i < bestTour.size() - 1; i++) {
+                pw.print(bestTour.get(i) + ", ");
+            }
+            pw.println(bestTour.get(bestTour.size() - 1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
+        }
     }
 
     /**
      * Initialize the distance matrix depending on the edge weight type
      * 
-     * @param type Edge weight type
-     * @param xLatitude x coordinates or latitudes
-     * @param yLongitude y cocrdinates or longitudes
-     * @param numVertices Number of vertices
-     * @return The disctance matrix
+     * @param type          Edge weight type
+     * @param points        Array of points
+     * @param numVertices   Number of vertices
+     * @return              The disctance matrix
      */
-    private static int[][] getDistMat(String type, double[] xLatitude, double[] yLongitude, int numVertices) {
-        int[][] res = new int[numVertices][numVertices];
+    public static void calDistMat(String type, Point[] points, int numVertices) {
+        distMat = new int[numVertices][numVertices];
 
         if (type.equals("EUC_2D")) {
             for (int i = 0; i < numVertices; i++) {
-                for (int j = 0; j <= i; j++) {
-                    res[i][j] = res[j][i] = calcEucDist(xLatitude[i], xLatitude[j], yLongitude[i], yLongitude[j]);
+                for (int j = 0; j < i; j++) {
+                    distMat[i][j] = distMat[j][i] = Point.calEucDist(points[i], points[j]);
                 }
-                // res[i][i] = Integer.MAX_VALUE;
+                distMat[i][i] = -1;
             }
         } else if (type.equals("GEO")) {
             for (int i = 0; i < numVertices; i++) {
-                for (int j = 0; j <= i; j++) {
-                    res[i][j] = res[j][i] = calcGeoDist(xLatitude[i], xLatitude[j], yLongitude[i], yLongitude[j]);
+                for (int j = 0; j < i; j++) {
+                    distMat[i][j] = distMat[j][i] = Point.calGeoDist(points[i], points[j]);
                 }
-                // res[i][i] = Integer.MAX_VALUE;
+                distMat[i][i] = -1;
             }
         }
-        return res;
     }
 
     /**
-     * Calculate the Euclidean distance between 2 nodes
-     *
-     * @param x1 x coordinate of node 1
-     * @param x2 x coordinate of node 2
-     * @param y1 y coordinate of node 1
-     * @param y2 y coordinate of node 2
-     * @return Distance between 2 nodes
+     * Construct output files based on arguments.
      */
-    private static int calcEucDist(double x1, double x2, double y1, double y2) {
-        return (int) Math.round(Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2)));
+    private static void composeOutputFileNames() {
+        String output = Main.getInstName() + "_" + Main.getAlgo() + "_" + Main.getCutoffTime();
+        if (Main.isHasSeed()) {
+            output += "_" + Main.getSeed();
+        }
+
+        // Solution file
+        solutionFile = output + ".sol";
+
+        // Trace file
+        traceFile = output + ".trace";
     }
 
-    /**
-     * Calculate the geo distance between 2 nodes
-     *
-     * @param lat1 latitude of node 1
-     * @param lat2 latitude of node 2
-     * @param long1 longitude of node 1
-     * @param long2 longitude of node 2
-     * @return Distance between 2 nodes
-     */
-    private static int calcGeoDist(double lat1, double lat2, double long1, double long2) {
-        return (int) Math.round(R * Math.acos( Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(Math.abs(long1 - long2))));
+    public static int getNumVertices() {
+        return numVertices;
+    }
+
+    public static int[][] getDistMat() {
+        return distMat;
     }
 }

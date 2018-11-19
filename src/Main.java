@@ -6,22 +6,28 @@
  * The main entry point for CSE6140 final project
  */
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
-    private static String filename;
+    private static String filePath;
+    private static String instName;
     private static String algo;
     private static int cutoffTime;
+    private static boolean hasSeed;
     private static int seed;
+    private static long startTime;
+    private static long currTime;
 
-    public static void main(String[] args) {
+    // TODO: cutoff time
+    public static void main(String[] args) throws IOException {
         // Parse arguments
         parseArguments(args);
 
-        // Handle input
+        // Handle input file
         try {
-            FileIo.readFile(filename);
+            FileIo.readFile(filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,6 +36,9 @@ public class Main {
         // Entry point for different algorithms
         switch (algo) {
             case "BnB":
+                Bnb bnb = new Bnb(FileIo.getNumVertices(), FileIo.getDistMat());
+                startTime = System.currentTimeMillis();
+                Bnb.run();
                 break;
             case "Approx":
                 break;
@@ -53,7 +62,7 @@ public class Main {
 
         // The number of input arguments can only be 6 or 8
         if (args.length != 6 && args.length != 8) {
-            System.err.println("Usage: -inst <filename> -algo [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]");
+            System.err.println("Usage: -inst <filePath> -algo [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]");
             System.exit(1);
         }
 
@@ -65,9 +74,12 @@ public class Main {
             // -inst
             if (arg.equals("-inst")) {
                 if (i < args.length) {
-                    filename = args[i++];
+                    filePath = args[i++];
+                    // Get instance name from the file name
+                    File file = new File(filePath);
+                    instName = file.getName().split("\\.")[0];
                 } else {
-                    System.err.println("-inst requires a filename");
+                    System.err.println("-inst requires a filePath");
                     System.exit(1);
                 }
             }
@@ -99,6 +111,7 @@ public class Main {
             // -seed
             if (arg.equals("-seed")) {
                 if (i < args.length) {
+                    hasSeed = true;
                     seed = Integer.parseInt(args[i++]);
                 } else {
                     System.err.println("-time requires a integer");
@@ -106,5 +119,37 @@ public class Main {
                 }
             }
         }
+    }
+
+    public static String getInstName() {
+        return instName;
+    }
+
+    public static String getAlgo() {
+        return algo;
+    }
+
+    public static int getCutoffTime() {
+        return cutoffTime;
+    }
+
+    public static boolean isHasSeed() {
+        return hasSeed;
+    }
+
+    public static int getSeed() {
+        return seed;
+    }
+
+    public static long getStartTime() {
+        return startTime;
+    }
+
+    public static long getCurrTime() {
+        return currTime;
+    }
+
+    public static void setCurrTime(long currTime) {
+        Main.currTime = currTime;
     }
 }
