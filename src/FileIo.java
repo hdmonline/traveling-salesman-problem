@@ -65,7 +65,6 @@ public class FileIo {
             currLine = br.readLine();
             currLine = currLine.trim();
             points[i] = new Point(
-                    Integer.parseInt(currLine.split(" ")[0]),
                     Double.parseDouble(currLine.split(" ")[1]),
                     Double.parseDouble(currLine.split(" ")[2]) );
         }
