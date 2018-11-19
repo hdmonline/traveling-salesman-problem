@@ -6,10 +6,8 @@
  * Helper function for reading dataset and writing results
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.ArrayList;
 
 public class FileIo {
 
@@ -21,6 +19,7 @@ public class FileIo {
     private static int[][] distMat;
 
     private static PrintWriter traceWriter;
+    private static PrintWriter solutionWriter;
 
     /**
      * Read the dataset from input file.
@@ -88,20 +87,41 @@ public class FileIo {
 
     /**
      * Update the trace result file when having a better result.
-     * TODO: Try BufferWriter to make it more efficient
      *
      * @param consumedTime  Current time since starting
      * @param bestDist      Best result so far
      */
     public static void updateTraceFile(double consumedTime, int bestDist) throws IOException {
-        traceWriter = new PrintWriter(traceFile, "UTF-8");
+        BufferedWriter br = new BufferedWriter(new FileWriter(traceFile, true));
         String outputLine = String.format("%.2f", consumedTime) + ", " + bestDist;
-        traceWriter.println(outputLine);
-        traceWriter.close();
+        br.write(outputLine);
+        br.newLine();
+        br.close();
     }
 
-    public static void closeWriter() {
-        traceWriter.close();
+    /**
+     * Write the solution to the solution file.
+     * If the time is up for running the program, the best solution will be written.
+     *
+     * @param bestDist  The shortest distance so far.
+     * @param bestTour  The tour corresponding to the shortest distance.
+     */
+    public static void writeSolution(int bestDist, ArrayList<Integer> bestTour) {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(solutionFile, "UTF-8");
+            pw.println(bestDist);
+            for (int i = 0; i < bestTour.size() - 1; i++) {
+                pw.print(bestTour.get(i) + ", ");
+            }
+            pw.println(bestTour.get(bestTour.size() - 1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
+        }
     }
 
     /**

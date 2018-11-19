@@ -12,42 +12,61 @@ import java.util.Stack;
 
 public class Bnb {
     private static int size; // Number of vertices
-    private static int[][] distMat; // Distance matrix
+    private static int[][] matrix; // Distance matrix
 
     private static Stack<Node> stackBnb = new Stack<>();
     private static int bestDist;
     private static ArrayList<Integer> bestTour;
+    private static double elapsedTime;
 
-    // Constructor
+    /**
+     * Constructor. Pass in the matrix and the size of the matrix.
+     *
+     * @param numV
+     * @param distMat
+     */
     public Bnb(int numV, int[][] distMat) {
         size = numV;
-        this.distMat = distMat;
+        matrix = distMat;
         bestDist = Integer.MAX_VALUE;
     }
 
+    /**
+     * The main function of BnB.
+     *
+     * @throws IOException
+     */
     public static void run() throws IOException {
-
-
         // Initial the root node
-        Node root = new Node(size, distMat);
+        Node root = new Node(size, matrix);
 
         stackBnb.push(root);
         while (!stackBnb.isEmpty()) {
+            // Check if the time is up. Write the best result to the output files
+            elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
+            if (elapsedTime > Main.getCutoffTime() && Main.getCutoffTime() > 0) {
+                FileIo.writeSolution(bestDist, bestTour);
+                System.out.println("Time is up. Exit with the best result so far.");
+                System.exit(3);
+            }
+
             Node processedNode = stackBnb.pop();
 
+            // Calculate the solution for 2 x 2 matrix
             if (processedNode.getSize() == 2) {
                 processedNode.calSolution();
 
-                // Update bestTour;
+                // Update bestTour
                 if (processedNode.getLowerBound() < bestDist) {
                     bestDist = processedNode.getLowerBound();
                     bestTour = processedNode.getFinalPath();
-                    double consumedTime = (System.currentTimeMillis() - Main.startTime) / 1000.0;
-                    FileIo.updateTraceFile(consumedTime, bestDist);
-                    System.out.println("Best so far: " + bestDist);
-                    System.out.println("Best tour so far: " + bestTour);
+                    elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
+                    FileIo.updateTraceFile(elapsedTime, bestDist);
+                    // System.out.println("Best so far: " + bestDist + "\t" + "Elapsed time: " + elapsedTime);
+                    // System.out.println("Best tour so far: " + bestTour);
                 }
             } else if (processedNode.getLowerBound() < bestDist) {
+                // Branch the node is it is better than lowerBound
                 processedNode.selectBranchPath();
 
                 // Right branch
@@ -56,6 +75,7 @@ public class Bnb {
                 // Left branch
                 boolean isContinue = processedNode.transToLeftBranch();
 
+                // Stack the node into the stack
                 if (isContinue) {
                     Node leftBranch = processedNode;
 
@@ -71,6 +91,8 @@ public class Bnb {
                 }
             }
         }
+
+        FileIo.writeSolution(bestDist, bestTour);
     }
 
     public static int getSize() {

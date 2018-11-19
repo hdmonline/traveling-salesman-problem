@@ -13,13 +13,16 @@ public class Node {
     private int lowerBound;
     private int size;
 
+    // Matrix and indices
     private int[][] matrix;
     private int[] rowIdx;
     private int[] colIdx;
 
+    // Row and column penalties
     private int[] rowPenalty;
     private int[] colPenalty;
 
+    // Highest penalty row and column
     private int highestPenaltyRow, highestPenaltyCol;
     private int maxPenalty;
 
@@ -27,7 +30,7 @@ public class Node {
     private ArrayList<int[]> shortcutHistory = new ArrayList<>();
     private ArrayList<int[]> pathHistory = new ArrayList<>();
 
-    // Final path.
+    // Final path
     private ArrayList<Integer> finalPath = new ArrayList<>();
 
     /**
@@ -39,7 +42,6 @@ public class Node {
         this.size = size;
 
         // Clone distance matrix
-        // TODO: check if cloning is necessary
         this.matrix = new int[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -394,9 +396,13 @@ public class Node {
         }
     }
 
+    /**
+     * Remove the path with highest penalty to transfer to left branch.
+     *
+     * @return If transfer successfully
+     */
     public boolean transToLeftBranch() {
-        // TODO: don't understand this
-        if (size == highestPenaltyCol) {
+        if (size <= highestPenaltyCol) {
             System.out.println("Left branch failed!");
             return false;
         }

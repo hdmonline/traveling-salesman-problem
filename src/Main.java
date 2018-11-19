@@ -17,14 +17,15 @@ public class Main {
     private static int cutoffTime;
     private static boolean hasSeed;
     private static int seed;
-    public static long startTime;
+    private static long startTime;
     private static long currTime;
 
+    // TODO: cutoff time
     public static void main(String[] args) throws IOException {
         // Parse arguments
         parseArguments(args);
 
-        // Handle input
+        // Handle input file
         try {
             FileIo.readFile(filePath);
         } catch (IOException e) {
@@ -38,7 +39,6 @@ public class Main {
                 Bnb bnb = new Bnb(FileIo.getNumVertices(), FileIo.getDistMat());
                 startTime = System.currentTimeMillis();
                 Bnb.run();
-                FileIo.closeWriter();
                 break;
             case "Approx":
                 break;
@@ -139,5 +139,17 @@ public class Main {
 
     public static int getSeed() {
         return seed;
+    }
+
+    public static long getStartTime() {
+        return startTime;
+    }
+
+    public static long getCurrTime() {
+        return currTime;
+    }
+
+    public static void setCurrTime(long currTime) {
+        Main.currTime = currTime;
     }
 }
