@@ -17,6 +17,7 @@ public class FileIo {
     private static String solutionFile;
     private static String traceFile;
     private static int[][] distMat;
+    private static String type;
 
     private static PrintWriter traceWriter;
     private static PrintWriter solutionWriter;
@@ -35,7 +36,6 @@ public class FileIo {
 
         // Get type and number of vertices from the header
         int numInfo = 0;
-        String type = "EUR_2D";
         // numVertices = 0;
         while (!currLine.equals("NODE_COORD_SECTION")) {
             currLine = br.readLine();
@@ -71,17 +71,6 @@ public class FileIo {
 
         // Construct output file names
         composeOutputFileNames();
-
-        // Calculate distance matrix
-        calDistMat(type, points, numVertices);
-//        numVertices = 5;
-//        distMat = new int[][] {
-//                {-1, 10, 8, 9, 7},
-//                {10, -1, 10, 5, 6},
-//                {8, 10, -1, 8, 9},
-//                {9, 5, 8, -1, 6},
-//                {7, 6, 9, 6, -1}
-//        };
     }
 
     /**
@@ -91,11 +80,19 @@ public class FileIo {
      * @param bestDist      Best result so far
      */
     public static void updateTraceFile(double consumedTime, int bestDist) throws IOException {
-        BufferedWriter br = new BufferedWriter(new FileWriter(traceFile, true));
-        String outputLine = String.format("%.2f", consumedTime) + ", " + bestDist;
-        br.write(outputLine);
-        br.newLine();
-        br.close();
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter(traceFile, true));
+            String outputLine = String.format("%.2f", consumedTime) + ", " + bestDist;
+            bw.write(outputLine);
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bw != null) {
+                bw.close();
+            }
+        }
     }
 
     /**
@@ -125,13 +122,13 @@ public class FileIo {
 
     /**
      * Initialize the distance matrix depending on the edge weight type
-     * 
+     *
      * @param type          Edge weight type
      * @param points        Array of points
      * @param numVertices   Number of vertices
      * @return              The disctance matrix
      */
-    public static void calDistMat(String type, Point[] points, int numVertices) {
+    public static int[][] calDistMat(String type, Point[] points, int numVertices, String algo) {
         distMat = new int[numVertices][numVertices];
 
         if (type.equals("EUC_2D")) {
@@ -149,6 +146,8 @@ public class FileIo {
                 distMat[i][i] = -1;
             }
         }
+
+        return distMat;
     }
 
     /**
@@ -173,5 +172,13 @@ public class FileIo {
 
     public static int[][] getDistMat() {
         return distMat;
+    }
+
+    public static String getType() {
+        return type;
+    }
+
+    public static Point[] getPoints() {
+        return points;
     }
 }

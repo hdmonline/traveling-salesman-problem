@@ -23,12 +23,13 @@ public class Bnb {
      * Constructor. Pass in the matrix and the size of the matrix.
      *
      * @param numV
-     * @param distMat
      */
-    public Bnb(int numV, int[][] distMat) {
+    public Bnb(int numV) {
         size = numV;
-        matrix = distMat;
         bestDist = Integer.MAX_VALUE;
+
+        // Calculate distance matrix
+        matrix = FileIo.calDistMat(FileIo.getType(), FileIo.getPoints(), size, "BnB");
     }
 
     /**

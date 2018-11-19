@@ -18,9 +18,7 @@ public class Main {
     private static boolean hasSeed;
     private static int seed;
     private static long startTime;
-    private static long currTime;
 
-    // TODO: cutoff time
     public static void main(String[] args) throws IOException {
         // Parse arguments
         parseArguments(args);
@@ -36,7 +34,7 @@ public class Main {
         // Entry point for different algorithms
         switch (algo) {
             case "BnB":
-                Bnb bnb = new Bnb(FileIo.getNumVertices(), FileIo.getDistMat());
+                Bnb bnb = new Bnb(FileIo.getNumVertices());
                 startTime = System.currentTimeMillis();
                 Bnb.run();
                 break;
@@ -143,13 +141,5 @@ public class Main {
 
     public static long getStartTime() {
         return startTime;
-    }
-
-    public static long getCurrTime() {
-        return currTime;
-    }
-
-    public static void setCurrTime(long currTime) {
-        Main.currTime = currTime;
     }
 }
