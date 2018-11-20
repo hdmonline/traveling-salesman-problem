@@ -15,7 +15,7 @@ public class Bnb {
     private static int[][] matrix; // Distance matrix
 
     private static Stack<Node> stackBnb = new Stack<>();
-    private static int bestDist;
+    private static long bestDist;
     private static ArrayList<Integer> bestTour;
     private static double elapsedTime;
 
@@ -63,8 +63,10 @@ public class Bnb {
                     bestTour = processedNode.getFinalPath();
                     elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
                     FileIo.updateTraceFile(elapsedTime, bestDist);
-                    // System.out.println("Best so far: " + bestDist + "\t" + "Elapsed time: " + elapsedTime);
-                    // System.out.println("Best tour so far: " + bestTour);
+
+                    // Print out updated results
+                    System.out.println("Best so far: " + bestDist + "\t" + "Elapsed time: " + elapsedTime);
+                    System.out.println("Best tour so far: " + bestTour);
                 }
             } else if (processedNode.getLowerBound() < bestDist) {
                 // Branch the node is it is better than lowerBound

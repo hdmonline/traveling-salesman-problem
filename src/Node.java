@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Node {
-    private int lowerBound;
+    private long lowerBound;
     private int size;
 
     // Matrix and indices
@@ -24,7 +24,7 @@ public class Node {
 
     // Highest penalty row and column
     private int highestPenaltyRow, highestPenaltyCol;
-    private int maxPenalty;
+    private long maxPenalty;
 
     // Visited sub-paths
     private ArrayList<int[]> shortcutHistory = new ArrayList<>();
@@ -251,6 +251,7 @@ public class Node {
             for (int j = 0; j < size; j++) {
                 if (matrix[i][j] == 0) {
                     // Check total penalty
+                    // To handle the case if rowPenalty or colPenalty is Integer.MAX_VALUE, maxPenalty need to be in long.
                     if (rowPenalty[i] + colPenalty[j] > maxPenalty) {
                         // Update
                         maxPenalty = rowPenalty[i] + colPenalty[j];
@@ -410,17 +411,25 @@ public class Node {
         lowerBound += maxPenalty;
         matrix[highestPenaltyRow][highestPenaltyCol] = -1;
 
-        // Reduce matrix by only unpdating elements on highest penalty row and column
+        // Reduce matrix by only updating elements on highest penalty row and column
+        // Handle if penalty > Integer.MAX_VALUE
         for (int i = 0; i < size; i++) {
-            matrix[highestPenaltyRow][i] -= rowPenalty[highestPenaltyRow];
-            matrix[i][highestPenaltyCol] -= colPenalty[highestPenaltyCol];
+            if (rowPenalty[highestPenaltyRow] == Integer.MAX_VALUE) {
+                matrix[highestPenaltyRow][i] -= 1;
+            } else {
+                matrix[highestPenaltyRow][i] -= rowPenalty[highestPenaltyRow];
+            }
+            if (colPenalty[highestPenaltyCol] == Integer.MAX_VALUE) {
+                matrix[i][highestPenaltyCol] -= 1;
+            } else {
+                matrix[i][highestPenaltyCol] -= colPenalty[highestPenaltyCol];
+            }
         }
-
         return true;
     }
 
 
-    public int getLowerBound() {
+    public long getLowerBound() {
         return lowerBound;
     }
 
