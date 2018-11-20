@@ -79,7 +79,7 @@ public class FileIo {
      * @param consumedTime  Current time since starting
      * @param bestDist      Best result so far
      */
-    public static void updateTraceFile(double consumedTime, int bestDist) throws IOException {
+    public static void updateTraceFile(double consumedTime, long bestDist) throws IOException {
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(traceFile, true));
@@ -102,7 +102,7 @@ public class FileIo {
      * @param bestDist  The shortest distance so far.
      * @param bestTour  The tour corresponding to the shortest distance.
      */
-    public static void writeSolution(int bestDist, ArrayList<Integer> bestTour) {
+    public static void writeSolution(long bestDist, ArrayList<Integer> bestTour) {
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(solutionFile, "UTF-8");
