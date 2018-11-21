@@ -41,7 +41,7 @@ public class Main {
             case "Approx":
                 break;
             case "LS1":
-                Ga ga = new Ga(40, FileIo.getNumVertices(), 0.8, 0.9);
+                Ga ga = new Ga(40, FileIo.getNumVertices(), 0.8, 0.1);
                 startTime = System.currentTimeMillis();
                 Ga.run();
                 break;

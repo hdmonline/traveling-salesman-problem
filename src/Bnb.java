@@ -20,7 +20,7 @@ public class Bnb {
     private static double elapsedTime;
 
     /**
-     * Constructor. Pass in the matrix and the size of the matrix.
+     * Constructor. Pass in the size of the matrix.
      *
      * @param numV
      */

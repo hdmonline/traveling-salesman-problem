@@ -26,19 +26,27 @@ public class Ga {
     private static int[] fitness; // The total distance of the tour. The smaller the better.
 
     private static double[] probCumulative; // The cumulative probability of each chromosome to be selected
-    private static double pc;
-    private static double pm;
+    private static double probCrossover;
+    private static double probMutation;
     private static int t;
 
     private static Random random;
     private static double elapsedTime;
 
-    public Ga(int scale, int numPoints, double pc, double pm) {
+    /**
+     * Constructor. Pass in parameters for GA.
+     *
+     * @param scale         The scale of the population
+     * @param numPoints     The size of the distance matrix
+     * @param probCrossover The probability of crossover
+     * @param probMutation  The probability of mutation
+     */
+    public Ga(int scale, int numPoints, double probCrossover, double probMutation) {
         // Initialize parameters
         this.scale = scale;
         this.numPoints = numPoints;
-        this.pc = pc;
-        this.pm = pm;
+        this.probCrossover = probCrossover;
+        this.probMutation = probMutation;
 
         // Records of the best results so far
         bestDist = Integer.MAX_VALUE;
@@ -65,6 +73,9 @@ public class Ga {
         matrix = FileIo.calDistMat(FileIo.getType(), FileIo.getPoints(), numPoints, "LS1");
     }
 
+    /**
+     * The entrance of Ga.
+     */
     public static void run() {
         // Initialize population
         initPopulation();
@@ -86,6 +97,7 @@ public class Ga {
             // Evolution
             evolution();
 
+            // Move the new population to the previous population
             updatePopulation();
 
             // Calculate new fitness for new population
@@ -95,6 +107,7 @@ public class Ga {
             elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
         }
 
+        // Write solution into .sol file
         FileIo.writeSolution(bestDist, bestTour);
         System.out.println("Time is up. Exit with the best result so far.");
         System.exit(0);
@@ -231,12 +244,31 @@ public class Ga {
      * @param idx2  The index of the second parent chromosome
      */
     private static void crossover(int idx1, int idx2) {
+        /*          rand1     rand2
+         *  -------------------------------
+         *  |   1_1   |   1_2   |   1_3   | chrom 1
+         *  -------------------------------
+         *  -------------------------------
+         *  |   2_1   |   2_2   |   2_3   | chrom 2
+         *  -------------------------------
+         *
+         *  -------------------------------
+         *  |         1         |   2_1   | new chrom 1
+         *  -------------------------------
+         *  -------------------------------
+         *  |   1_3   |         2         | new chrom 2
+         *  -------------------------------
+         */
+
+        // Original chromosomes
         ArrayList<Integer> chrom1 = newPopulation.get(idx1);
         ArrayList<Integer> chrom2 = newPopulation.get(idx2);
 
+        // New chromosomes
         ArrayList<Integer> nChrom1 = new ArrayList<>(numPoints);
         ArrayList<Integer> nChrom2 = new ArrayList<>(numPoints);
 
+        // Two indices to split original chromosomes into 3 segments
         int rand1 = random.nextInt(numPoints);
         int rand2 = random.nextInt(numPoints);
         while(rand1 == rand2) {
@@ -250,7 +282,7 @@ public class Ga {
             rand2 = tmp;
         }
 
-        // Move the 3rd segment of chrom2 to nChrom2
+        // Move the 3rd segment of chrom1 to nChrom2
         int i, j, k;
         for (i = 0, j = rand2; j < numPoints; i++, j++) {
             nChrom2.add(chrom1.get(j));
@@ -284,38 +316,51 @@ public class Ga {
         newPopulation.set(idx2, nChrom2);
     }
 
+    /**
+     * Mutation.
+     *
+     * @param chromIdx The index of the chromosome in the population
+     */
     private static void mutation(int chromIdx) {
         ArrayList<Integer> chrom = newPopulation.get(chromIdx);
+
+        // 2 random numbers
         int rand1 = random.nextInt(numPoints);
         int rand2 = random.nextInt(numPoints);
         while (rand1 == rand2) {
             rand2 = random.nextInt(numPoints);
         }
 
-        // Swap two points
+        // Swap two points from 2 chromosomes
         int tmp = chrom.get(rand1);
         chrom.set(rand1, chrom.get(rand2));
         chrom.set(rand2, tmp);
     }
 
+    /**
+     * Crossover and mutation with probabilities {@link #probCrossover} and {@link #probMutation}.
+     */
     private static void evolution() {
         for (int i = 1; i + 1 < scale; i += 2) {
             double rand = random.nextDouble();
-            if (rand < pc) {
+            if (rand < probCrossover) {
                 crossover(i, i + 1);
             } else {
                 rand = random.nextDouble();
-                if (rand < pm) {
+                if (rand < probMutation) {
                     mutation(i);
                 }
                 rand = random.nextDouble();
-                if (rand < pm) {
+                if (rand < probMutation) {
                     mutation(i+1);
                 }
             }
         }
     }
 
+    /**
+     * Move the new population to the previous population.
+     */
     @SuppressWarnings("unchecked")
     private static void updatePopulation() {
         prevPopulation = (ArrayList<ArrayList<Integer>>) newPopulation.clone();
