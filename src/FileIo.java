@@ -136,14 +136,24 @@ public class FileIo {
                 for (int j = 0; j < i; j++) {
                     distMat[i][j] = distMat[j][i] = Point.calEucDist(points[i], points[j]);
                 }
-                distMat[i][i] = -1;
+                // distMat[i][i] = -1;
             }
         } else if (type.equals("GEO")) {
             for (int i = 0; i < numVertices; i++) {
                 for (int j = 0; j < i; j++) {
                     distMat[i][j] = distMat[j][i] = Point.calGeoDist(points[i], points[j]);
                 }
+                // distMat[i][i] = -1;
+            }
+        }
+
+        if (algo.equals("BnB")) {
+            for (int i = 0; i < numVertices; i++) {
                 distMat[i][i] = -1;
+            }
+        } else if (algo.equals("LS1")) {
+            for (int i = 0; i < numVertices; i++) {
+                distMat[i][i] = 0;
             }
         }
 

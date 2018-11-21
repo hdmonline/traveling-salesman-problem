@@ -16,7 +16,7 @@ public class Main {
     private static String algo;
     private static int cutoffTime;
     private static boolean hasSeed;
-    private static int seed;
+    private static long seed;
     private static long startTime;
 
     public static void main(String[] args) throws IOException {
@@ -41,6 +41,9 @@ public class Main {
             case "Approx":
                 break;
             case "LS1":
+                Ga ga = new Ga(40, FileIo.getNumVertices(), 0.8, 0.9);
+                startTime = System.currentTimeMillis();
+                Ga.run();
                 break;
             case "LS2":
                 break;
@@ -110,7 +113,7 @@ public class Main {
             if (arg.equals("-seed")) {
                 if (i < args.length) {
                     hasSeed = true;
-                    seed = Integer.parseInt(args[i++]);
+                    seed = Long.parseLong(args[i++]);
                 } else {
                     System.err.println("-time requires a integer");
                     System.exit(1);
@@ -135,7 +138,7 @@ public class Main {
         return hasSeed;
     }
 
-    public static int getSeed() {
+    public static long getSeed() {
         return seed;
     }
 
