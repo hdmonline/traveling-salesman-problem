@@ -14,10 +14,10 @@ public class Bnb {
     private static int size; // Number of vertices
     private static int[][] matrix; // Distance matrix
 
-    private static Stack<Node> stackBnb = new Stack<>();
-    private static long bestDist;
-    private static ArrayList<Integer> bestTour;
-    private static double elapsedTime;
+    private static Stack<Node> stackBnb = new Stack<>(); // The stack of nodes to keep track of the processed nodes
+    private static long bestDist; // Total distance calculated from the best result
+    private static ArrayList<Integer> bestTour; // Best tour
+    private static double elapsedTime; // Elapsed time
 
     /**
      * Constructor. Pass in the size of the matrix.

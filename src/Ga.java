@@ -14,24 +14,25 @@ import java.util.Random;
 
 public class Ga {
 
-    private static int scale;
-    private static int numPoints;
-    private static int[][] matrix;
-    private static int bestT;
-    private static int bestDist;
-    private static ArrayList<Integer> bestTour;
+    private static int scale; // Scale of populations
+    private static int numPoints; // Size of matrix
+    private static int[][] matrix; // Distance matrix
+    private static int bestDist; // Total distance calculated from the best result
+    private static ArrayList<Integer> bestTour; // Best tour
 
+    // New and previous populations
     private static ArrayList<ArrayList<Integer>> prevPopulation;
     private static ArrayList<ArrayList<Integer>> newPopulation;
     private static int[] fitness; // The total distance of the tour. The smaller the better.
 
     private static double[] probCumulative; // The cumulative probability of each chromosome to be selected
-    private static double probCrossover;
-    private static double probMutation;
-    private static int t;
+    private static double probCrossover; // Probability of crossover
+    private static double probMutation; // Probability of mutation
+    private static int bestGeneration; // The generation of the best result so far
+    private static int generation; // Number of generation
 
-    private static Random random;
-    private static double elapsedTime;
+    private static Random random; // The random number generator
+    private static double elapsedTime; // Elapsed time
 
     /**
      * Constructor. Pass in parameters for GA.
@@ -50,9 +51,9 @@ public class Ga {
 
         // Records of the best results so far
         bestDist = Integer.MAX_VALUE;
-        bestTour = new ArrayList<>();;
-        bestT = 0;
-        t = 0;
+        bestTour = new ArrayList<>();
+        generation = 0;
+        bestGeneration = 0;
 
         // Populations
         newPopulation = new ArrayList<>(scale);
@@ -175,7 +176,7 @@ public class Ga {
     @SuppressWarnings("unchecked")
     private static void updateResult() {
         // Find the chromosome with smallest fitness (best fit)
-        t++;
+        generation++;
         int bestChromIdx = 0;
         int bestFitness = fitness[0];
 
@@ -189,11 +190,11 @@ public class Ga {
         // Update bestDist
         if (bestFitness < bestDist) {
             bestDist = bestFitness;
-            bestT = t;
+            bestGeneration = generation;
             bestTour = (ArrayList<Integer>) prevPopulation.get(bestChromIdx).clone();
 
             // Print out updated results
-            System.out.println("Best so far: " + bestDist + "\tElapsed time: " + elapsedTime + "\tGeneration: " + t);
+            System.out.println("Best so far: " + bestDist + "\tElapsed time: " + elapsedTime + "\tGeneration: " + generation);
             System.out.println("Best tour so far: " + bestTour);
 
             try {
