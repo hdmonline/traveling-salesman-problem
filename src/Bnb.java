@@ -17,7 +17,6 @@ public class Bnb {
     private static Stack<Node> stackBnb = new Stack<>(); // The stack of nodes to keep track of the processed nodes
     private static long bestDist; // Total distance calculated from the best result
     private static ArrayList<Integer> bestTour; // Best tour
-    private static double elapsedTime; // Elapsed time
 
     /**
      * Constructor. Pass in the size of the matrix.
@@ -40,6 +39,9 @@ public class Bnb {
     public static void run() throws IOException {
         // Initial the root node
         Node root = new Node(size, matrix);
+
+        // Elapsed time
+        double elapsedTime;
 
         stackBnb.push(root);
         while (!stackBnb.isEmpty()) {
@@ -65,8 +67,11 @@ public class Bnb {
                     FileIo.updateTraceFile(elapsedTime, bestDist);
 
                     // Print out updated results
-                    System.out.println("Best so far: " + bestDist + "\t" + "Elapsed time: " + elapsedTime);
-                    System.out.println("Best tour so far: " + bestTour);
+                    if (Main.isVerbose()) {
+                        System.out.println("Best so far: " + bestDist + "\t" + "Elapsed time: " + elapsedTime);
+                        System.out.println("Best tour so far: " + bestTour);
+                    }
+
                 }
             } else if (processedNode.getLowerBound() < bestDist) {
                 // Branch the node is it is better than lowerBound

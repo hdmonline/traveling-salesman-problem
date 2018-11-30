@@ -19,8 +19,6 @@ public class Approx {
     private static ArrayList<Integer> currTour; // Tour for each node as root
     private static int bestDist; // Total distance calculated from the best result
 
-    private static double elapsedTime; // Elapsed time
-
     /**
      * Constructor. Pass in the number of points for Approx.
      *
@@ -45,7 +43,9 @@ public class Approx {
      */
     @SuppressWarnings("unchecked")
     public static void run() {
+        double elapsedTime; // Elapsed time
 
+        // Iterate through all the node as root.
         for (int i = 0; i < numNodes; i++) {
             currTour.clear();
             int[] parents = prim(i);
@@ -54,7 +54,15 @@ public class Approx {
             if (currDist < bestDist) {
                 bestDist = currDist;
                 bestTour = (ArrayList<Integer>) currTour.clone();
+
                 elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
+
+                // Print out updated results
+                if (Main.isVerbose()) {
+                    System.out.println("Best so far: " + bestDist + "\tElapsed time: " + elapsedTime);
+                    System.out.println("Best tour so far: " + bestTour);
+                }
+
                 try {
                     FileIo.updateTraceFile(elapsedTime, bestDist);
                 } catch (IOException e) {

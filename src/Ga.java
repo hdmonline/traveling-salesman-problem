@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Random;
 
 public class Ga {
-
     private static int scale; // Scale of populations
     private static int numPoints; // Size of matrix
     private static int[][] matrix; // Distance matrix
@@ -194,8 +193,10 @@ public class Ga {
             bestTour = (ArrayList<Integer>) prevPopulation.get(bestChromIdx).clone();
 
             // Print out updated results
-            System.out.println("Best so far: " + bestDist + "\tElapsed time: " + elapsedTime + "\tGeneration: " + generation);
-            System.out.println("Best tour so far: " + bestTour);
+            if (Main.isVerbose()) {
+                System.out.println("Best so far: " + bestDist + "\tElapsed time: " + elapsedTime + "\tGeneration: " + generation);
+                System.out.println("Best tour so far: " + bestTour);
+            }
 
             try {
                 FileIo.updateTraceFile(elapsedTime, bestDist);

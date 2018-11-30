@@ -18,6 +18,7 @@ public class Main {
     private static boolean hasSeed;
     private static long seed;
     private static long startTime;
+    private static boolean verbose;
 
     public static void main(String[] args) throws IOException {
         // Parse arguments
@@ -61,6 +62,8 @@ public class Main {
     private static void parseArguments(String[] args) {
 
         String arg;
+
+        verbose = false;
 
         // The number of input arguments can only be 6 or 8
         if (args.length != 6 && args.length != 8) {
@@ -120,6 +123,11 @@ public class Main {
                     System.exit(1);
                 }
             }
+
+            // -verbose
+            if (arg.equals("-verbose")) {
+                verbose = true;
+            }
         }
     }
 
@@ -145,5 +153,9 @@ public class Main {
 
     public static long getStartTime() {
         return startTime;
+    }
+
+    public static boolean isVerbose() {
+        return verbose;
     }
 }
