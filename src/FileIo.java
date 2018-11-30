@@ -147,7 +147,7 @@ public class FileIo {
             }
         }
 
-        if (algo.equals("BnB")) {
+        if (algo.equals("BnB") || algo.equals("Approx")) {
             for (int i = 0; i < numVertices; i++) {
                 distMat[i][i] = -1;
             }

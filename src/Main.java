@@ -32,17 +32,18 @@ public class Main {
 
 
         // Entry point for different algorithms
+        startTime = System.currentTimeMillis();
         switch (algo) {
             case "BnB":
                 Bnb bnb = new Bnb(FileIo.getNumVertices());
-                startTime = System.currentTimeMillis();
                 Bnb.run();
                 break;
             case "Approx":
+                Approx approx = new Approx(FileIo.getNumVertices());
+                Approx.run();
                 break;
             case "LS1":
                 Ga ga = new Ga(40, FileIo.getNumVertices(), 0.8, 0.1);
-                startTime = System.currentTimeMillis();
                 Ga.run();
                 break;
             case "LS2":
