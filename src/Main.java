@@ -66,7 +66,7 @@ public class Main {
         verbose = false;
 
         // The number of input arguments can only be 6 or 8
-        if (args.length != 6 && args.length != 8) {
+        if (args.length < 6 && args.length >9) {
             System.err.println("Usage: -inst <filePath> -algo [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]");
             System.exit(1);
         }
