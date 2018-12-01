@@ -151,7 +151,7 @@ public class FileIo {
             for (int i = 0; i < numVertices; i++) {
                 distMat[i][i] = -1;
             }
-        } else if (algo.equals("LS1")) {
+        } else if (algo.equals("LS1") || algo.equals("LS2")) {
             for (int i = 0; i < numVertices; i++) {
                 distMat[i][i] = 0;
             }

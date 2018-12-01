@@ -25,7 +25,7 @@ public class Approx {
      * @param numPoints The size of the distance matrix
      */
     public Approx(int numPoints) {
-        this.numNodes = numPoints;
+        numNodes = numPoints;
 
         // Initialize bestDist.
         bestDist = Integer.MAX_VALUE;
