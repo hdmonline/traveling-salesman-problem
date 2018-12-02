@@ -74,7 +74,7 @@ public class Bnb {
 
                 }
             } else if (processedNode.getLowerBound() < bestDist) {
-                // Branch the node is it is better than lowerBound
+                // Branch the node if it is better than lowerBound
                 processedNode.selectBranchPath();
 
                 // Right branch

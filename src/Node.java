@@ -246,7 +246,7 @@ public class Node {
 
         maxPenalty = -1;
         // Calculate total penalty for each zero path and
-        // keep track of the index of the path with highest panalty.
+        // keep track of the index of the path with highest penalty.
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (matrix[i][j] == 0) {
