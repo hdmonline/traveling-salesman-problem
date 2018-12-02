@@ -59,7 +59,7 @@ public class Point {
 //        double q1 = Math.cos(deg2Rad(p1.getyLongitude() - p2.getyLongitude()));
 //        double q2 = Math.cos(deg2Rad(p1.getxLatitude() - p2.getxLatitude()));
 //        double q3 = Math.cos(deg2Rad(p1.getxLatitude() + p2.getxLatitude()));
-        return (int) Math.floor(R * Math.acos( 0.5 * ( (1.0+q1)*q2 - (1.0-q1)*q3 ) ) + 1.0);
+        return (int) (R * Math.acos( 0.5 * ( (1.0+q1)*q2 - (1.0-q1)*q3 ) ) + 1.0);
     }
 
     /**
@@ -69,12 +69,7 @@ public class Point {
      * @return      Radians
      */
     private static double deg2Rad(double deg) {
-        int intDeg;
-        if (deg < 0) {
-            intDeg = (int) Math.ceil(deg);
-        } else {
-            intDeg = (int) Math.floor(deg);
-        }
+        int intDeg = (int) deg;
         double fractional = deg - intDeg;
         return Math.PI * (intDeg + 5.0 * fractional / 3.0) / 180.0;
     }
