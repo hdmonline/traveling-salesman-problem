@@ -7,14 +7,14 @@
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Ga {
+    private static final double RETAIN_RATIO = 0.1;
+
     private static int scale; // Scale of populations
     private static int numPoints; // Size of matrix
+    private static int numRetain; // The number of best chromosomes that are retained to next generation
     private static int[][] matrix; // Distance matrix
     private static int bestDist; // Total distance calculated from the best result
     private static ArrayList<Integer> bestTour; // Best tour
@@ -36,12 +36,12 @@ public class Ga {
     /**
      * Constructor. Pass in parameters for GA.
      *
-     * @param scale         The scale of the population
      * @param numPoints     The size of the distance matrix
+     * @param scale         The scale of the population
      * @param probCrossover The probability of crossover
      * @param probMutation  The probability of mutation
      */
-    public Ga(int scale, int numPoints, double probCrossover, double probMutation) {
+    public Ga(int numPoints, int scale, double probCrossover, double probMutation) {
         // Initialize parameters
         this.scale = scale;
         this.numPoints = numPoints;
@@ -57,6 +57,8 @@ public class Ga {
         // Populations
         newPopulation = new ArrayList<>(scale);
         prevPopulation = new ArrayList<>(scale);
+
+        numRetain = (int) (scale * RETAIN_RATIO);
 
         // Initialize populations
         for (int i = 0; i < scale; i++) {
@@ -176,21 +178,25 @@ public class Ga {
     private static void updateResult() {
         // Find the chromosome with smallest fitness (best fit)
         generation++;
-        int bestChromIdx = 0;
-        int bestFitness = fitness[0];
 
-        for (int i = 1; i < scale; i++) {
-            if (fitness[i] < bestFitness) {
-                bestFitness = fitness[i];
-                bestChromIdx = i;
-            }
-        }
+        IndexValuePair[] bestChroms = indicesNTopElements(fitness, numRetain);
+        //int[] bestFitness = new int[numRetain];
+
+//        for (int i = 1; i < scale; i++) {
+//            if (fitness[i] < bestFitness) {
+//                bestFitness = fitness[i];
+//                bestChromIdx = i;
+//            }
+//        }
+//        for (int i = 0; i < numRetain; i++) {
+//            bestFitness[i] = bestChroms[i].value;
+//        }
 
         // Update bestDist
-        if (bestFitness < bestDist) {
-            bestDist = bestFitness;
+        if (bestChroms[0].value < bestDist) {
+            bestDist = bestChroms[0].value;
             bestGeneration = generation;
-            bestTour = (ArrayList<Integer>) prevPopulation.get(bestChromIdx).clone();
+            bestTour = (ArrayList<Integer>) prevPopulation.get(bestChroms[0].index).clone();
 
             // Print out updated results
             if (Main.isVerbose()) {
@@ -207,7 +213,10 @@ public class Ga {
         }
 
         // Put the best chromosome into next generation
-        retainChrom(bestChromIdx, 0);
+        for (int i = 0; i < numRetain; i++) {
+            retainChrom(bestChroms[i].index, i);
+        }
+
     }
 
     /**
@@ -366,5 +375,50 @@ public class Ga {
     @SuppressWarnings("unchecked")
     private static void updatePopulation() {
         prevPopulation = (ArrayList<ArrayList<Integer>>) newPopulation.clone();
+    }
+
+    /**
+     * Find indices of the best N fitness from the prev population.
+     *
+     * @param arr Fitness array
+     * @param num N
+     * @return    The indices of top elements
+     */
+    private static IndexValuePair[] indicesNTopElements(int[] arr, int num) {
+        IndexValuePair[] result = new IndexValuePair[num];
+
+        // Create a pq with descending order
+        Queue<IndexValuePair> tops = new PriorityQueue<>(num, new Comparator<IndexValuePair>() {
+            @Override
+            public int compare(IndexValuePair o1, IndexValuePair o2) {
+                return o1.value - o2.value;
+            }
+        });
+
+        for (int i = 0; i < arr.length; i++) {
+            if (tops.size() < num) {
+                tops.add(new IndexValuePair(i, arr[i]));
+            } else {
+                if (arr[i] < tops.peek().value) {
+                    tops.poll();
+                    tops.add(new IndexValuePair(i, arr[i]));
+                }
+            }
+        }
+
+        for (int i = 0; i < num; i++) {
+            result[i] = tops.poll();
+        }
+        return result;
+    }
+
+    private static class IndexValuePair {
+        private int index;
+        private int value;
+
+        public IndexValuePair(int index, int value) {
+            this.index = index;
+            this.value = value;
+        }
     }
 }
