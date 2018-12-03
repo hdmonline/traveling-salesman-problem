@@ -46,7 +46,6 @@ public class Point {
 
     /**
      * Calculate the geo distance between 2 points.
-     * TODO: This is not correct for some reason
      *
      * @param p1 Point 1
      * @param p2 Point 2
@@ -56,9 +55,6 @@ public class Point {
         double q1 = Math.cos(deg2Rad(p1.getyLongitude()) - deg2Rad(p2.getyLongitude()));
         double q2 = Math.cos(deg2Rad(p1.getxLatitude()) - deg2Rad(p2.getxLatitude()));
         double q3 = Math.cos(deg2Rad(p1.getxLatitude()) + deg2Rad(p2.getxLatitude()));
-//        double q1 = Math.cos(deg2Rad(p1.getyLongitude() - p2.getyLongitude()));
-//        double q2 = Math.cos(deg2Rad(p1.getxLatitude() - p2.getxLatitude()));
-//        double q3 = Math.cos(deg2Rad(p1.getxLatitude() + p2.getxLatitude()));
         return (int) (R * Math.acos( 0.5 * ( (1.0+q1)*q2 - (1.0-q1)*q3 ) ) + 1.0);
     }
 
