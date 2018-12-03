@@ -52,7 +52,7 @@ public class Main {
                 Approx.run();
                 break;
             case "LS1":
-                Ga ga = new Ga(FileIo.getNumVertices(), Math.min(30, FileIo.getNumVertices()),0.8, 0.1);
+                Ga ga = new Ga(FileIo.getNumVertices(), Math.min(20, FileIo.getNumVertices()),0.8, 0.1);
                 Ga.run();
                 break;
             case "LS2":
