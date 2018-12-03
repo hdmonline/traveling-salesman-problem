@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Sa {
-    private static final int RESTART_ITERARION = 500;
+    private static final int RESTART_ITERARION = 300;
     private static int[][] matrix;
     private static int numNodes;
     // Keep track of the bestTour so far
@@ -23,7 +23,7 @@ public class Sa {
 
     // Annealing parameters
     private static double temperature = 1500;
-    private static final double DELTA = 0.99;
+    private static final double DELTA = 0.98;
     private static final double FINAL_TEMPERATURE = 1e-5;
 
     // The random number generator
@@ -58,13 +58,18 @@ public class Sa {
     /**
      * The entrance of Sa.
      */
-    // TODO: restart
     public static void run() {
         elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
 
         int iterationSinceBest = 0;
         while (temperature > FINAL_TEMPERATURE || elapsedTime < Main.getCutoffTime()) {
-            Tour adjacentTour = generateAdjacentTour(currTour);
+            // Recover the bestTour if it's over the  max allowed iteration
+            if (iterationSinceBest > RESTART_ITERARION) {
+                currTour = new Tour(bestTour);
+            }
+
+            // Generate new Tour using 2-exchange/4exchange
+            Tour adjacentTour = currTour.generateAdjacentTour(1);
 
             if (adjacentTour.getDistance() < currTour.getDistance()) {
                 currTour = new Tour(adjacentTour);
@@ -83,12 +88,13 @@ public class Sa {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                     // Clear the iteration counter
                     iterationSinceBest = 0;
                 }
             } else {
                 double p = random.nextDouble();
-                if (Math.exp((adjacentTour.getDistance() - currTour.getDistance()) / temperature) > p) {
+                if (p < Math.exp((adjacentTour.getDistance() - currTour.getDistance()) / temperature)) {
                     currTour = new Tour(adjacentTour);
                 }
             }
@@ -107,43 +113,15 @@ public class Sa {
         System.exit(0);
     }
 
-    /**
-     * Generate the next adjacent tour.
-     *
-     * @param tour The current tour
-     * @return The adjacent tour
-     */
-    public static Tour generateAdjacentTour(Tour tour) {
-        // 2-exchange
-        int rand1 = random.nextInt(numNodes);
-        int rand2 = random.nextInt(numNodes);
-        while (rand1 == rand2) {
-            rand2 = random.nextInt(numNodes);
-        }
-
-        // Make sure that rand1 < rand2
-        if (rand1 > rand2) {
-            int tmp = rand1;
-            rand1 = rand2;
-            rand2 = tmp;
-        }
-
-        Tour newTour = new Tour(tour);
-        List<Integer> subtour = newTour.getTour().subList(rand1, rand2);
-        Collections.reverse(subtour);
-
-        // Update the distance
-        newTour.calDist();
-        return newTour;
-        // TODO: 4-exchange
-
-    }
-
     public static int[][] getMatrix() {
         return matrix;
     }
 
     public static int getNumNodes() {
         return numNodes;
+    }
+
+    public static Random getRandom() {
+        return random;
     }
 }
