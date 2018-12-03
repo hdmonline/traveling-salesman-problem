@@ -24,9 +24,6 @@ public class Main {
         // Initialize seed
         seed = -1;
 
-        // If need seed depending on algorithm
-        boolean needSeed = false;
-
         // Parse arguments
         parseArguments(args);
 
@@ -35,6 +32,12 @@ public class Main {
             FileIo.readFile(filePath);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // Throw error if no seed is set from user
+        if ((algo.equals("LS1") || algo.equals("LS2")) && seed < 0) {
+            System.err.println(algo + " needs a seed!");
+            System.exit(1);
         }
 
         // Entry point for different algorithms
@@ -49,21 +52,15 @@ public class Main {
                 Approx.run();
                 break;
             case "LS1":
-                needSeed = true;
                 Ga ga = new Ga(40, FileIo.getNumVertices(), 0.8, 0.1);
                 Ga.run();
                 break;
             case "LS2":
-                needSeed = true;
+                Sa sa = new Sa(FileIo.getNumVertices());
+                Sa.run();
                 break;
             default:
                 break;
-        }
-
-        // Throw error if no seed is set from user
-        if (needSeed && seed < 0) {
-            System.err.println(algo + " needs a seed!");
-            System.exit(1);
         }
     }
 

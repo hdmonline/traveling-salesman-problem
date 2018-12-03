@@ -273,7 +273,7 @@ public class Ga {
         // Two indices to split original chromosomes into 3 segments
         int rand1 = random.nextInt(numPoints);
         int rand2 = random.nextInt(numPoints);
-        while(rand1 == rand2) {
+        while (rand1 == rand2) {
             rand2 = random.nextInt(numPoints);
         }
 
