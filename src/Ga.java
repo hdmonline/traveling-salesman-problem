@@ -42,6 +42,7 @@ public class Ga {
     
     public static void init(int numPoints, int scale, double probCrossover, double probMutation, ArrayList<Integer> initTour) {
         // Initialize parameters
+        Ga.numPoints = numPoints;
         Ga.scale = scale;
         Ga.probCrossover = probCrossover;
         Ga.probMutation = probMutation;

@@ -62,7 +62,6 @@ public class Main {
                 Approx approx4Ls1 = new Approx(FileIo.getNumVertices());
                 approx4Ls1.run(false);
                 Ga.init(FileIo.getNumVertices(), scale , 0.8, pm,  approx4Ls1.getBestTour());
-
                 Ga.run();
                 break;
             case "LS2":
