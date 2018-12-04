@@ -14,7 +14,7 @@ public class Main {
     private static String filePath;
     private static String instName;
     private static String algo;
-    private static int cutoffTime;
+    private static int cutoffTime = 0;
     private static boolean hasSeed;
     private static long seed;
     private static long startTime;
@@ -37,6 +37,11 @@ public class Main {
         // Throw error if no seed is set from user
         if ((algo.equals("LS1") || algo.equals("LS2")) && seed < 0) {
             System.err.println(algo + " needs a seed!");
+            System.exit(1);
+        }
+
+        if (!algo.equals("BnB") && cutoffTime == 0) {
+            System.err.println(algo + " needs a cutoff time!");
             System.exit(1);
         }
 
