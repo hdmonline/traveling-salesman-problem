@@ -15,12 +15,12 @@ public class Ga {
     private static int[][] matrix; // Distance matrix
     private static int bestDist; // Total distance calculated from the best result
     private static ArrayList<Integer> bestTour; // Best tour
+    private static ArrayList<Integer> initTour; // Initial tour from Approx
 
     // New and previous populations
     private static ArrayList<ArrayList<Integer>> prevPopulation;
     private static ArrayList<ArrayList<Integer>> newPopulation;
     private static int[] fitness; // The total distance of the tour. The smaller the better.
-    private static ArrayList<Integer> tempList;
 
     private static double[] probCumulative; // The cumulative probability of each chromosome to be selected
     private static double probCrossover; // Probability of crossover
@@ -39,12 +39,12 @@ public class Ga {
      * @param probCrossover The probability of crossover
      * @param probMutation  The probability of mutation
      */
-    public Ga(int numPoints, int scale, double probCrossover, double probMutation) {
+    public Ga(int numPoints, int scale, double probCrossover, double probMutation, ArrayList<Integer> initTour) {
         // Initialize parameters
-        this.scale = scale;
-        this.numPoints = numPoints;
-        this.probCrossover = probCrossover;
-        this.probMutation = probMutation;
+        Ga.scale = scale;
+        Ga.probCrossover = probCrossover;
+        Ga.probMutation = probMutation;
+        Ga.initTour = initTour;
 
         // Records of the best results so far
         bestDist = Integer.MAX_VALUE;
@@ -177,7 +177,7 @@ public class Ga {
         int bestChromIdx = 0;
         int bestFitness = fitness[0];
         int tempNum = scale;
-        tempList = new ArrayList<Integer>();
+        ArrayList<Integer> tempList = new ArrayList<>(scale);
 
         for (int k = 0; k < scale; k++){
             tempList.add(k, fitness[k]);
