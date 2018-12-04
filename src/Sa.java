@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Sa {
-    private static final int RESTART_ITERARION = 300;
+    private static final int RESTART_ITERARION = 80000;
     private static int[][] matrix;
     private static int numNodes;
     // Keep track of the bestTour so far
@@ -22,9 +22,12 @@ public class Sa {
     private static Tour currTour;
 
     // Annealing parameters
-    private static double temperature = 1500;
+    private static double temperature;
+    private static final double TIME_CONST = 3.91 / 120;
     private static final double DELTA = 0.98;
     private static final double FINAL_TEMPERATURE = 1e-5;
+    public static final double START_TEMPERATURE = 1500;
+
 
     // The random number generator
     private static Random random;
@@ -52,6 +55,9 @@ public class Sa {
         Collections.shuffle(tourArray, random);
         bestTour = new Tour(tourArray);
         currTour = new Tour(bestTour);
+
+        // Initialize temperature
+        temperature = START_TEMPERATURE;
 
     }
 
@@ -99,13 +105,14 @@ public class Sa {
                 }
             }
 
-            // Update temperature and iteration number
-            temperature *= DELTA;
-            iterationSinceBest++;
-
             // Update the elapsedTime
             elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
+
+            // Update temperature and iteration number
+            temperature = START_TEMPERATURE * Math.exp(-TIME_CONST * elapsedTime);
+            iterationSinceBest++;
         }
+
 
         // Write solution into .sol file
         FileIo.writeSolution(bestTour.getDistance(), bestTour.getTour());
