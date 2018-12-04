@@ -29,7 +29,7 @@ public class Tour {
     }
 
     public Tour(Tour tour) {
-        this.tour = new ArrayList<Integer>(Sa.getNumNodes());
+        this.tour = new ArrayList<>(Sa.getNumNodes());
         for (int node : tour.getTour()) {
             this.tour.add(node);
         }
