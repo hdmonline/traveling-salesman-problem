@@ -1,7 +1,8 @@
 clear all
 close all
 
-cityname = 'NYC';
+cityname = 'Roanoke';
+algo = 'LS2'; % BnB | Approx | LS1 | LS2
 interval = 0.1; % in s
 
 fileName = ['..\..\data\' cityname '.tsp'];
@@ -17,10 +18,11 @@ N = size(x, 1);
 
 label = cellstr(num2str([1:N]'));
 
-pathFile = ['.\paths\' cityname '.path'];
+pathFile = ['.\paths\' cityname '_' algo '.path'];
 
 fid = fopen(pathFile);
 pathCols = textscan(fid, repmat('%d',1,N), 'Delimiter', ',');
+fclose(fid);
 
 paths = cell2mat(pathCols);
 
