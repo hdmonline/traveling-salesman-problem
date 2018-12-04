@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Sa {
-    private static final int RESTART_ITERARION = 80000;
+    private static final int RESTART_ITERATION_END = 12000;
+    private static final int RESTART_ITERATION_START = 400000;
     private static int[][] matrix;
     private static int numNodes;
     // Keep track of the bestTour so far
@@ -23,15 +24,17 @@ public class Sa {
 
     // Annealing parameters
     private static double temperature;
-    private static final double TIME_CONST = 3.91 / 120;
-    private static final double DELTA = 0.98;
+    private static double restartIteration;
+    private static final double TIME_CONST = 3.91;
     private static final double FINAL_TEMPERATURE = 1e-5;
-    public static final double START_TEMPERATURE = 1500;
+    public static final double START_TEMPERATURE = 2;
 
 
     // The random number generator
     private static Random random;
     private static double elapsedTime; // Elapsed time
+    private static double timeConst;
+    private static int restarIterationStart;
 
     /**
      * Constructor. Pass in the number of points for Approx.
@@ -59,6 +62,12 @@ public class Sa {
         // Initialize temperature
         temperature = START_TEMPERATURE;
 
+        // Initialize restart iteration
+        restartIteration = RESTART_ITERATION_END * 50;
+        restarIterationStart = RESTART_ITERATION_END * 50;
+
+        // Initialize time constant
+        timeConst = TIME_CONST / Main.getCutoffTime();
     }
 
     /**
@@ -68,9 +77,9 @@ public class Sa {
         elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
 
         int iterationSinceBest = 0;
-        while (temperature > FINAL_TEMPERATURE || elapsedTime < Main.getCutoffTime()) {
+        while (temperature > FINAL_TEMPERATURE && elapsedTime < Main.getCutoffTime()) {
             // Recover the bestTour if it's over the  max allowed iteration
-            if (iterationSinceBest > RESTART_ITERARION) {
+            if (iterationSinceBest > restartIteration) {
                 currTour = new Tour(bestTour);
             }
 
@@ -100,7 +109,7 @@ public class Sa {
                 }
             } else {
                 double p = random.nextDouble();
-                if (p < Math.exp((adjacentTour.getDistance() - currTour.getDistance()) / temperature)) {
+                if (p < Math.exp((currTour.getDistance() - adjacentTour.getDistance()) / temperature / currTour.getDistance())) {
                     currTour = new Tour(adjacentTour);
                 }
             }
@@ -108,8 +117,11 @@ public class Sa {
             // Update the elapsedTime
             elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
 
-            // Update temperature and iteration number
-            temperature = START_TEMPERATURE * Math.exp(-TIME_CONST * elapsedTime);
+            // Update temperature, restart iteration and iteration number
+            temperature = START_TEMPERATURE * Math.exp(-timeConst * elapsedTime);
+            // restartIteration = restarIterationStart * Math.exp(-timeConst * elapsedTime);
+            // linear
+            restartIteration = RESTART_ITERATION_START - (RESTART_ITERATION_START - RESTART_ITERATION_END) / Main.getCutoffTime() * elapsedTime;
             iterationSinceBest++;
         }
 
