@@ -40,7 +40,7 @@ public class Ga {
      * @param probMutation  The probability of mutation
      */
     
-    public Ga(int numPoints, int scale, double probCrossover, double probMutation, ArrayList<Integer> initTour) {
+    public static void init(int numPoints, int scale, double probCrossover, double probMutation, ArrayList<Integer> initTour) {
         // Initialize parameters
         Ga.scale = scale;
         Ga.probCrossover = probCrossover;
