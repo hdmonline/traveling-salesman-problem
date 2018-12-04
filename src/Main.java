@@ -44,7 +44,7 @@ public class Main {
         startTime = System.currentTimeMillis();
         switch (algo) {
             case "BnB":
-                Bnb bnb = new Bnb(FileIo.getNumVertices());
+                Bnb.init(FileIo.getNumVertices());
                 Bnb.run();
                 break;
             case "Approx":
@@ -56,13 +56,14 @@ public class Main {
                 double pm = FileIo.getNumVertices() >= 90 ? 0.1 : 0.01;
                 Approx approx4Ls1 = new Approx(FileIo.getNumVertices());
                 approx4Ls1.run(false);
-                Ga ga = new Ga(FileIo.getNumVertices(), scale , 0.8, pm, approx4Ls1.getBestTour());
+                Ga.init(FileIo.getNumVertices(), scale , 0.8, pm,  approx4Ls1.getBestTour());
+
                 Ga.run();
                 break;
             case "LS2":
                 Approx approx4Ls2 = new Approx(FileIo.getNumVertices());
                 approx4Ls2.run(false);
-                Sa sa = new Sa(FileIo.getNumVertices(), approx4Ls2.getBestTour());
+                Sa.init(FileIo.getNumVertices(), approx4Ls2.getBestTour());
                 Sa.run();
                 break;
             default:
