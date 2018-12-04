@@ -1,9 +1,3 @@
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Tour.java
  * @author Group 31: Chong Ye, Dongmin Han, Shan Xiong, Yuanlai Zhou
@@ -11,6 +5,12 @@ import java.util.List;
  *
  * Tour class
  */
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+
 
 
 public class Tour {
