@@ -54,6 +54,8 @@ public class Ga {
         generation = 0;
         bestGeneration = 0;
 
+        //
+
         // Populations
         newPopulation = new ArrayList<>(scale);
         prevPopulation = new ArrayList<>(scale);
@@ -180,17 +182,6 @@ public class Ga {
         generation++;
 
         IndexValuePair[] bestChroms = indicesNTopElements(fitness, numRetain);
-        //int[] bestFitness = new int[numRetain];
-
-//        for (int i = 1; i < scale; i++) {
-//            if (fitness[i] < bestFitness) {
-//                bestFitness = fitness[i];
-//                bestChromIdx = i;
-//            }
-//        }
-//        for (int i = 0; i < numRetain; i++) {
-//            bestFitness[i] = bestChroms[i].value;
-//        }
 
         // Update bestDist
         if (bestChroms[0].value < bestDist) {
@@ -332,15 +323,15 @@ public class Ga {
      *
      * @param chromIdx The index of the chromosome in the population
      */
-    private static void mutation(int chromIdx) {
+    private static void mutation(int chromIdx, int diffGeneration) {
         ArrayList<Integer> chrom = newPopulation.get(chromIdx);
 
-        // 2 random numbers
-        int rand1 = random.nextInt(numPoints);
-        int rand2 = random.nextInt(numPoints);
-        while (rand1 == rand2) {
-            rand2 = random.nextInt(numPoints);
-        }
+        int maxDist = (int) Math.round((numPoints - 2) * Math.min(1, (10000 / (double)(diffGeneration + 1)))) + 1;
+        maxDist = Math.max(maxDist, (int)Math.round(numPoints*0.1));
+        int rand1, rand2;
+        int distance = random.nextInt(maxDist);
+        rand1 = random.nextInt(numPoints - distance);
+        rand2 = rand1 + distance;
 
         // Swap two points from 2 chromosomes
         int tmp = chrom.get(rand1);
@@ -359,11 +350,11 @@ public class Ga {
             } else {
                 rand = random.nextDouble();
                 if (rand < probMutation) {
-                    mutation(i);
+                    mutation(i, generation - bestGeneration);
                 }
                 rand = random.nextDouble();
                 if (rand < probMutation) {
-                    mutation(i+1);
+                    mutation(i+1, generation - bestGeneration);
                 }
             }
         }
