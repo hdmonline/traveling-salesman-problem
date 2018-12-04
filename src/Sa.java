@@ -37,11 +37,11 @@ public class Sa {
     private static int restarIterationStart;
 
     /**
-     * Constructor. Pass in the number of points for Approx.
+     * Initializer. Pass in the number of points for Approx.
      *
      * @param numPoints The size of the distance matrix
      */
-    public Sa(int numPoints, ArrayList<Integer> initTour) {
+    public static void init(int numPoints, ArrayList<Integer> initTour) {
         numNodes = numPoints;
 
         // Random generator with given seed

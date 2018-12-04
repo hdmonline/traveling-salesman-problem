@@ -32,19 +32,19 @@ public class Ga {
     private static double elapsedTime; // Elapsed time
 
     /**
-     * Constructor. Pass in parameters for GA.
+     * Initializer. Pass in parameters for GA.
      *
      * @param numPoints     The size of the distance matrix
      * @param scale         The scale of the population
      * @param probCrossover The probability of crossover
      * @param probMutation  The probability of mutation
      */
-    public Ga(int numPoints, int scale, double probCrossover, double probMutation) {
+    public static void init(int numPoints, int scale, double probCrossover, double probMutation) {
         // Initialize parameters
-        this.scale = scale;
-        this.numPoints = numPoints;
-        this.probCrossover = probCrossover;
-        this.probMutation = probMutation;
+        Ga.scale = scale;
+        Ga.numPoints = numPoints;
+        Ga.probCrossover = probCrossover;
+        Ga.probMutation = probMutation;
 
         // Records of the best results so far
         bestDist = Integer.MAX_VALUE;

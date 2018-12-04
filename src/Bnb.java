@@ -19,11 +19,11 @@ public class Bnb {
     private static ArrayList<Integer> bestTour; // Best tour
 
     /**
-     * Constructor. Pass in the size of the matrix.
+     * Initialize the instance object.
      *
      * @param numV
      */
-    public Bnb(int numV) {
+    public static void init(int numV) {
         size = numV;
         bestDist = Integer.MAX_VALUE;
 
