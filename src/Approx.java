@@ -42,7 +42,7 @@ public class Approx {
      * The entrance of Approx
      */
     @SuppressWarnings("unchecked")
-    public static void run() {
+    public void run(boolean writeOutput) {
         double elapsedTime; // Elapsed time
 
         // Iterate through all the node as root.
@@ -58,19 +58,23 @@ public class Approx {
                 elapsedTime = (System.currentTimeMillis() - Main.getStartTime()) / 1000.0;
 
                 // Print out updated results
-                if (Main.isVerbose()) {
+                if (Main.isVerbose() && writeOutput) {
                     System.out.println("Best so far: " + bestDist + "\tElapsed time: " + elapsedTime);
                     System.out.println("Best tour so far: " + bestTour);
                 }
 
-                try {
-                    FileIo.updateTraceFile(elapsedTime, bestDist);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (writeOutput){
+                    try {
+                        FileIo.updateTraceFile(elapsedTime, bestDist);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
-        FileIo.writeSolution(bestDist, bestTour);
+        if (writeOutput) {
+            FileIo.writeSolution(bestDist, bestTour);
+        }
     }
 
     /**
@@ -79,7 +83,7 @@ public class Approx {
      * @param startNode The starting node. (The root of the tree)
      * @return The MST in the form of an array. Each element's index is its parent
      */
-    private static int[] prim(int startNode) {
+    private int[] prim(int startNode) {
         int[] attachmentCost = new int[numNodes]; // The minimum distance from each node to MST set
         int[] visitedNodes = new int[numNodes]; // The order of visited node
         int[] parents = new int[numNodes]; // The closest node from MST set to each node
@@ -133,7 +137,7 @@ public class Approx {
      * @param node Given node as a parent
      * @param parents Tree array
      */
-    private static void preOrder(int node, int[] parents) {
+    private void preOrder(int node, int[] parents) {
         currTour.add(node + 1);
         Queue<Integer> children = findChildren(node, parents);
         while(!children.isEmpty()) {
@@ -148,7 +152,7 @@ public class Approx {
      * @param parents Tree array
      * @return  The children
      */
-    private static Queue<Integer> findChildren(int node, int[] parents) {
+    private Queue<Integer> findChildren(int node, int[] parents) {
         Queue<Integer> children = new LinkedList<>();
         for (int i = 0; i < parents.length; i++) {
             if (node != i && node == parents[i]) {
@@ -163,12 +167,16 @@ public class Approx {
      *
      * @return The total distance
      */
-    private static int calDist() {
+    private int calDist() {
         int totalDist = 0;
         for (int i = 0; i < numNodes - 1; i++) {
             totalDist += matrix[currTour.get(i)-1][currTour.get(i+1)-1];
         }
         totalDist += matrix[currTour.get(numNodes-1)-1][currTour.get(0)-1];
         return totalDist;
+    }
+
+    public ArrayList<Integer> getBestTour() {
+        return bestTour;
     }
 }

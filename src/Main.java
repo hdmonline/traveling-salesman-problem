@@ -49,7 +49,7 @@ public class Main {
                 break;
             case "Approx":
                 Approx approx = new Approx(FileIo.getNumVertices());
-                Approx.run();
+                approx.run(true);
                 break;
             case "LS1":
                 int scale = FileIo.getNumVertices() >= 90 ? 20 : 40;
@@ -58,7 +58,9 @@ public class Main {
                 Ga.run();
                 break;
             case "LS2":
-                Sa sa = new Sa(FileIo.getNumVertices());
+                Approx approx4Ls2 = new Approx(FileIo.getNumVertices());
+                approx4Ls2.run(false);
+                Sa sa = new Sa(FileIo.getNumVertices(), approx4Ls2.getBestTour());
                 Sa.run();
                 break;
             default:

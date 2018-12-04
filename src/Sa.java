@@ -41,7 +41,7 @@ public class Sa {
      *
      * @param numPoints The size of the distance matrix
      */
-    public Sa(int numPoints) {
+    public Sa(int numPoints, ArrayList<Integer> initTour) {
         numNodes = numPoints;
 
         // Random generator with given seed
@@ -51,12 +51,12 @@ public class Sa {
         matrix = FileIo.calDistMat(FileIo.getType(), FileIo.getPoints(), numPoints, "LS2");
 
         // Initialize bestTour and currTour.
-        ArrayList<Integer> tourArray = new ArrayList<>(numNodes);
+        /* ArrayList<Integer> tourArray = new ArrayList<>(numNodes);
         for (int i = 1; i <= numNodes; i++) {
             tourArray.add(i);
         }
-        Collections.shuffle(tourArray, random);
-        bestTour = new Tour(tourArray);
+        Collections.shuffle(tourArray, random); */
+        bestTour = new Tour(initTour);
         currTour = new Tour(bestTour);
 
         // Initialize temperature
