@@ -7,10 +7,7 @@
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Ga {
     private static int scale; // Scale of populations
@@ -23,6 +20,7 @@ public class Ga {
     private static ArrayList<ArrayList<Integer>> prevPopulation;
     private static ArrayList<ArrayList<Integer>> newPopulation;
     private static int[] fitness; // The total distance of the tour. The smaller the better.
+    private static ArrayList<Integer> tempList;
 
     private static double[] probCumulative; // The cumulative probability of each chromosome to be selected
     private static double probCrossover; // Probability of crossover
@@ -36,12 +34,12 @@ public class Ga {
     /**
      * Constructor. Pass in parameters for GA.
      *
-     * @param scale         The scale of the population
      * @param numPoints     The size of the distance matrix
+     * @param scale         The scale of the population
      * @param probCrossover The probability of crossover
      * @param probMutation  The probability of mutation
      */
-    public Ga(int scale, int numPoints, double probCrossover, double probMutation) {
+    public Ga(int numPoints, int scale, double probCrossover, double probMutation) {
         // Initialize parameters
         this.scale = scale;
         this.numPoints = numPoints;
@@ -178,11 +176,37 @@ public class Ga {
         generation++;
         int bestChromIdx = 0;
         int bestFitness = fitness[0];
+        int tempNum = scale;
+        tempList = new ArrayList<Integer>();
+
+        for (int k = 0; k < scale; k++){
+            tempList.add(k, fitness[k]);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            int tempFitness = tempList.get(0);
+            int tempIndex = 0;
+            for (int j = 1; j < tempNum; j++) {
+                if (tempList.get(j) < tempFitness) {
+                    tempFitness = tempList.get(j);
+                    tempIndex = j;
+                }
+            }
+            tempNum = tempNum - 1;
+            tempList.remove(tempIndex);
+            for (int ii = 0; ii < scale; ii++) {
+                if (fitness[ii] == tempFitness) {
+                    bestChromIdx = ii;
+                }
+            }
+            // Put the best chromosome into next generation
+            retainChrom(bestChromIdx, i);
+        }
+
 
         for (int i = 1; i < scale; i++) {
             if (fitness[i] < bestFitness) {
                 bestFitness = fitness[i];
-                bestChromIdx = i;
             }
         }
 
@@ -206,8 +230,7 @@ public class Ga {
 
         }
 
-        // Put the best chromosome into next generation
-        retainChrom(bestChromIdx, 0);
+
     }
 
     /**
@@ -273,7 +296,7 @@ public class Ga {
         // Two indices to split original chromosomes into 3 segments
         int rand1 = random.nextInt(numPoints);
         int rand2 = random.nextInt(numPoints);
-        while (rand1 == rand2) {
+        while(rand1 == rand2) {
             rand2 = random.nextInt(numPoints);
         }
 
@@ -367,4 +390,6 @@ public class Ga {
     private static void updatePopulation() {
         prevPopulation = (ArrayList<ArrayList<Integer>>) newPopulation.clone();
     }
+
+
 }
