@@ -52,7 +52,9 @@ public class Main {
                 Approx.run();
                 break;
             case "LS1":
-                Ga ga = new Ga(40, FileIo.getNumVertices(), 0.8, 0.1);
+                int scale = FileIo.getNumVertices() >= 90 ? 20 : 40;
+                double pm = FileIo.getNumVertices() >= 90 ? 0.1 : 0.01;
+                Ga ga = new Ga(FileIo.getNumVertices(), scale , 0.8, pm);
                 Ga.run();
                 break;
             case "LS2":
