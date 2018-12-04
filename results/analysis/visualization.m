@@ -15,6 +15,8 @@ y = cols{3};
 
 N = size(x, 1);
 
+label = cellstr(num2str([1:N]'));
+
 pathFile = ['.\paths\' cityname '.path'];
 
 fid = fopen(pathFile);
@@ -27,6 +29,7 @@ axis([min(x(:)) max(x(:)) min(y(:)) max(y(:))]);
 
 for i = 1 : size(paths, 1)
     scatter(x, y);
+    text(x,y,label);
     hold on;
     pathX = [x(paths(i,:)); x(paths(i,1))];
     pathY = [y(paths(i,:)); y(paths(i,1))];
