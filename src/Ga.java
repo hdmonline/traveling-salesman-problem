@@ -117,8 +117,13 @@ public class Ga {
     /**
      * Initialize {@link #prevPopulation}.
      */
+    @SuppressWarnings("unchecked")
     private static void initPopulation() {
-        for (int i = 0; i < scale; i++) {
+        for (int i = 0; i < 5; i++) {
+            prevPopulation.set(i, (ArrayList<Integer>) initTour.clone());
+        }
+
+        for (int i = 5; i < scale; i++) {
             // Initialize chromosome with index in ascent order
             for (int j = 0; j < numPoints; j++) {
                 prevPopulation.get(i).add(j+1);
