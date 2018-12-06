@@ -25,7 +25,7 @@ java -jar tsp.jar -inst <filename>
                   [-verbose]
 ```
 ### Options
-**-inst <filename>**  
+**-inst <file_name>**  
 The filename of the dataset.
 
 
