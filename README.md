@@ -1,4 +1,4 @@
-# Travelling Salesman Problem
+# Traveling Salesman Problem
 This is the final project of CSE6140 in GaTech, 2018 Fall.
 
 The Travaling Salesperson Problem (TSP) arises in numerous applications such as vehicle routing, circuit board drilling, VLSI design, robot control, X-ray crystallography, machine scheduling and computational biology. In this project, we attempted to solve the TSP using different algorithms, evaluating  their theoretical and experimental complexities on both real and random datasets.
